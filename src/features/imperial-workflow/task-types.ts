@@ -32,6 +32,20 @@ export type ImperialTaskControl = {
   updatedAt: string
 }
 
+export type ImperialDispatchAssignment = {
+  ministryRole: string
+  assignedAt: string
+  returnedAt?: string
+  status: "assigned" | "returned"
+}
+
+export type ImperialDispatchMeta = {
+  assignments: ImperialDispatchAssignment[]
+  consolidated: boolean
+  consolidatedAt?: string
+  consolidatedBy?: string
+}
+
 export type ImperialTaskRecord = {
   id: string
   sessionID: string
@@ -43,6 +57,7 @@ export type ImperialTaskRecord = {
   progressLog: ImperialProgressLogEntry[]
   scheduler: ImperialSchedulerMeta
   control?: ImperialTaskControl
+  dispatch?: ImperialDispatchMeta
   createdAt: string
   updatedAt: string
 }

@@ -28,6 +28,8 @@ Strict transition rules:
 - `resume`: only when control status is `stopped`
 - `cancel`: blocked only when already cancelled
 - all actions are blocked when task state is `Done`
+- `stop/cancel` trigger runtime bridge: abort parent session + cancel descendant background tasks (best effort)
+- `resume` currently restores governance state only (runtime continuation pending)
 
 ## Snapshot Query Params
 

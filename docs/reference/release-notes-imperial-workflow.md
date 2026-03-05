@@ -18,6 +18,8 @@ Added a configurable imperial governance layer for agent delegation:
 - Snapshot query filters and optional token auth (`dashboard.auth_token`)
 - New strict governance flags: `strict_mapping`, `require_review_note`
 - Review lifecycle corrected to `zhongshu -> menxia -> zhongshu -> shangshu`
+- Dispatch closure guard: `shangshu -> zhongshu` is blocked without returned ministry receipt
+- Runtime bridge for dashboard `stop/cancel` (best-effort parent abort + descendant cancel)
 
 ## New Config
 

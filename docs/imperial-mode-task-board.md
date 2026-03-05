@@ -2,8 +2,7 @@
 
 ## In Progress
 
-- [ ] P1.1 Dispatch closure hardening
-- [ ] P1.2 Dashboard-runtime linkage
+- [ ] P1.2 Dashboard-runtime linkage (resume continuation pending)
 
 ## Pending
 
@@ -17,3 +16,4 @@
 - [x] P0.1 Strict mapping governance
 - [x] P0.2 Review closure correctness
 - [x] P0.3 Zhongshu preset documentation
+- [x] P1.1 Dispatch closure hardening

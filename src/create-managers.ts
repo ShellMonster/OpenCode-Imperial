@@ -5,6 +5,7 @@ import type { PluginContext, TmuxConfig } from "./plugin/types"
 import type { SubagentSessionCreatedEvent } from "./features/background-agent"
 import { BackgroundManager } from "./features/background-agent"
 import { ImperialDashboardManager } from "./features/imperial-dashboard/manager"
+import { createImperialDashboardRuntimeLink } from "./features/imperial-dashboard/runtime-link"
 import { SkillMcpManager } from "./features/skill-mcp-manager"
 import { initTaskToastManager } from "./features/task-toast-manager"
 import { TmuxSessionManager } from "./features/tmux-subagent"
@@ -28,13 +29,6 @@ export function createManagers(args: {
 }): Managers {
   const { ctx, pluginConfig, tmuxConfig, modelCacheState, backgroundNotificationHookEnabled } = args
   const dashboardConfig = pluginConfig.imperial_workflow?.dashboard
-  const imperialDashboardManager = new ImperialDashboardManager(ctx.directory, {
-    enabled: (pluginConfig.imperial_workflow?.enabled ?? false) && (dashboardConfig?.enabled ?? true),
-    host: dashboardConfig?.host ?? "127.0.0.1",
-    port: dashboardConfig?.port ?? 7897,
-    refreshMs: dashboardConfig?.refresh_ms ?? 1500,
-    authToken: dashboardConfig?.auth_token,
-  })
 
   const tmuxSessionManager = new TmuxSessionManager(ctx, tmuxConfig)
 
@@ -72,6 +66,15 @@ export function createManagers(args: {
       enableParentSessionNotifications: backgroundNotificationHookEnabled,
     },
   )
+  const dashboardRuntimeLink = createImperialDashboardRuntimeLink(ctx, backgroundManager)
+  const imperialDashboardManager = new ImperialDashboardManager(ctx.directory, {
+    enabled: (pluginConfig.imperial_workflow?.enabled ?? false) && (dashboardConfig?.enabled ?? true),
+    host: dashboardConfig?.host ?? "127.0.0.1",
+    port: dashboardConfig?.port ?? 7897,
+    refreshMs: dashboardConfig?.refresh_ms ?? 1500,
+    authToken: dashboardConfig?.auth_token,
+    onTaskAction: dashboardRuntimeLink,
+  })
 
   initTaskToastManager(ctx.client)
 

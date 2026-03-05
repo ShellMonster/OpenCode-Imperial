@@ -23,3 +23,5 @@
 - [x] Add filter/sort/search params for snapshot endpoint.
 - [x] Add optional auth token for dashboard endpoints in shared environments.
 - [x] Add richer UI panels (overview + task detail + memorial/audit) aligned with edict style.
+- [x] Add best-effort runtime bridge for stop/cancel actions.
+- [ ] Add full runtime continuation bridge for resume action.

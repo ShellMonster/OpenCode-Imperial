@@ -12,6 +12,8 @@ type TaskStateFile = {
   tasks: Record<string, ImperialTaskRecord>
 }
 
+const MINISTRY_ROLES: ImperialRole[] = ["hubu", "libu", "bingbu", "xingbu", "gongbu", "libu_hr"]
+
 export class ImperialTaskStateStore {
   private readonly filePath: string
   private data: TaskStateFile = { tasks: {} }
@@ -57,6 +59,10 @@ export class ImperialTaskStateStore {
         previousStatus: null,
         reason: null,
         updatedAt: now,
+      },
+      dispatch: {
+        assignments: [],
+        consolidated: false,
       },
       createdAt: now,
       updatedAt: now,
@@ -123,6 +129,22 @@ export class ImperialTaskStateStore {
 
     const task = this.get(input.sessionID)
     if (!task) return
+    normalizeTaskRecord(task)
+
+    const now = new Date().toISOString()
+    this.updateDispatchMeta(task, input.callerRole, input.targetRole, now, input.callerAgent)
+
+    if (input.callerRole === "shangshu" && input.targetRole === "zhongshu") {
+      const returnedCount = task.dispatch!.assignments.filter((assignment) => assignment.status === "returned").length
+      if (returnedCount === 0) {
+        this.appendFlow(input.sessionID, "尚书省", "中书省", "dispatch closure blocked: no returned ministry receipt")
+        return
+      }
+      task.dispatch!.consolidated = true
+      task.dispatch!.consolidatedAt = now
+      task.dispatch!.consolidatedBy = input.callerAgent ?? "shangshu"
+    }
+
     const current = task.state
     if (!canTransition(current, next)) {
       log("[imperial-workflow] invalid state transition ignored", {
@@ -132,7 +154,7 @@ export class ImperialTaskStateStore {
       })
       return
     }
-    const now = new Date().toISOString()
+
     task.state = next
     task.org = roleToOrg(next, input.targetRole)
     if (input.callerRole === "zhongshu" && input.targetRole === "menxia") {
@@ -209,15 +231,65 @@ export class ImperialTaskStateStore {
       })
     }
   }
+
+  private updateDispatchMeta(
+    task: ImperialTaskRecord,
+    callerRole: ImperialRole,
+    targetRole: ImperialRole,
+    nowIso: string,
+    callerAgent?: string,
+  ): void {
+    const dispatch = task.dispatch!
+    if (callerRole === "shangshu" && MINISTRY_ROLES.includes(targetRole)) {
+      const existing = dispatch.assignments.find((item) => item.ministryRole === targetRole)
+      if (existing) {
+        existing.status = "assigned"
+        existing.assignedAt = nowIso
+        existing.returnedAt = undefined
+      } else {
+        dispatch.assignments.push({
+          ministryRole: targetRole,
+          status: "assigned",
+          assignedAt: nowIso,
+        })
+      }
+      return
+    }
+
+    if (MINISTRY_ROLES.includes(callerRole) && targetRole === "shangshu") {
+      const existing = dispatch.assignments.find((item) => item.ministryRole === callerRole)
+      if (existing) {
+        existing.status = "returned"
+        existing.returnedAt = nowIso
+      } else {
+        dispatch.assignments.push({
+          ministryRole: callerRole,
+          status: "returned",
+          assignedAt: nowIso,
+          returnedAt: nowIso,
+        })
+      }
+      dispatch.consolidated = false
+      dispatch.consolidatedAt = undefined
+      dispatch.consolidatedBy = callerAgent
+    }
+  }
 }
 
 function normalizeTaskRecord(task: ImperialTaskRecord): void {
-  if (task.control) return
-  task.control = {
-    status: "active",
-    previousStatus: null,
-    reason: null,
-    updatedAt: task.updatedAt,
+  if (!task.control) {
+    task.control = {
+      status: "active",
+      previousStatus: null,
+      reason: null,
+      updatedAt: task.updatedAt,
+    }
+  }
+  if (!task.dispatch) {
+    task.dispatch = {
+      assignments: [],
+      consolidated: false,
+    }
   }
 }
 

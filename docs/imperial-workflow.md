@@ -9,6 +9,7 @@ This plugin now supports a configurable imperial governance layer with:
 - Lightweight scheduler checks (retry/escalation on stall)
 - Unified task activity query tool (`imperial_task_activity`)
 - Optional lightweight real-time dashboard (`HTTP + SSE`)
+- Dispatch closure guard before `Done` (requires returned ministry receipt + shangshu consolidation)
 
 ## Minimal Config (Three Departments)
 

@@ -126,4 +126,30 @@ describe("imperial dashboard http handler", () => {
     )
     expect(allowed.status).toBe(200)
   })
+
+  test("calls runtime action bridge after successful action", async () => {
+    const dir = fixtureDir()
+    const calls: Array<{ action: string; sessionID: string }> = []
+    const handler = createImperialDashboardFetchHandler({
+      directory: dir,
+      refreshMs: 800,
+      onTaskAction: async ({ action, sessionID }) => {
+        calls.push({ action, sessionID })
+        return { ok: true, note: "runtime ok" }
+      },
+    })
+
+    const response = await handler(
+      new Request("http://127.0.0.1/imperial-dashboard/api/tasks/s1/actions", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "stop" }),
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(calls).toHaveLength(1)
+    expect(calls[0].action).toBe("stop")
+    expect(calls[0].sessionID).toBe("s1")
+  })
 })

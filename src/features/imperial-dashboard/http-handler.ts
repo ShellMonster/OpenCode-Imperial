@@ -7,6 +7,10 @@ type Options = {
   directory: string
   refreshMs: number
   authToken?: string
+  onTaskAction?: (input: { action: "stop" | "cancel" | "resume"; sessionID: string; reason?: string }) => Promise<{
+    ok: boolean
+    note: string
+  }>
 }
 
 type TaskActionBody = { action?: "stop" | "cancel" | "resume"; reason?: string }
@@ -42,7 +46,18 @@ export function createImperialDashboardFetchHandler(options: Options): (request:
       const body = (await safeJson<TaskActionBody>(request)) ?? {}
       if (!body.action) return json({ error: "action is required" }, 400)
       const result = applyTaskAction(directory, sessionID, body.action, body.reason)
-      return json({ message: result.message, task: result.task }, result.status)
+      if (!result.ok) {
+        return json({ message: result.message, task: result.task }, result.status)
+      }
+      let runtime: { ok: boolean; note: string } | undefined
+      if (options.onTaskAction) {
+        runtime = await options.onTaskAction({
+          action: body.action,
+          sessionID,
+          reason: body.reason,
+        })
+      }
+      return json({ message: result.message, task: result.task, runtime }, result.status)
     }
 
     if (path.startsWith("/imperial-dashboard/api/tasks/")) {

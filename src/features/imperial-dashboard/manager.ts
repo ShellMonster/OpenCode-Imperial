@@ -7,6 +7,10 @@ export type ImperialDashboardRuntimeConfig = {
   port: number
   refreshMs: number
   authToken?: string
+  onTaskAction?: (input: { action: "stop" | "cancel" | "resume"; sessionID: string; reason?: string }) => Promise<{
+    ok: boolean
+    note: string
+  }>
 }
 
 export class ImperialDashboardManager {
@@ -26,6 +30,7 @@ export class ImperialDashboardManager {
       directory: this.directory,
       refreshMs: this.config.refreshMs,
       authToken: this.config.authToken,
+      onTaskAction: this.config.onTaskAction,
     })
 
     try {
