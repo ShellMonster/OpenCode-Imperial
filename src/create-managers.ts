@@ -33,6 +33,7 @@ export function createManagers(args: {
     host: dashboardConfig?.host ?? "127.0.0.1",
     port: dashboardConfig?.port ?? 7897,
     refreshMs: dashboardConfig?.refresh_ms ?? 1500,
+    authToken: dashboardConfig?.auth_token,
   })
 
   const tmuxSessionManager = new TmuxSessionManager(ctx, tmuxConfig)

@@ -25,6 +25,13 @@ export type ImperialSchedulerMeta = {
   lastDispatchStatus: "queued" | "success" | "failed" | "timeout" | "error"
 }
 
+export type ImperialTaskControl = {
+  status: "active" | "stopped" | "cancelled"
+  previousStatus: "active" | "stopped" | "cancelled" | null
+  reason: string | null
+  updatedAt: string
+}
+
 export type ImperialTaskRecord = {
   id: string
   sessionID: string
@@ -35,6 +42,7 @@ export type ImperialTaskRecord = {
   flowLog: ImperialFlowLogEntry[]
   progressLog: ImperialProgressLogEntry[]
   scheduler: ImperialSchedulerMeta
+  control?: ImperialTaskControl
   createdAt: string
   updatedAt: string
 }

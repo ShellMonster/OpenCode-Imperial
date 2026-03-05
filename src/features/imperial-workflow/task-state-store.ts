@@ -22,7 +22,10 @@ export class ImperialTaskStateStore {
   }
 
   get(sessionID: string): ImperialTaskRecord | undefined {
-    return this.data.tasks[sessionID]
+    const task = this.data.tasks[sessionID]
+    if (!task) return undefined
+    normalizeTaskRecord(task)
+    return task
   }
 
   ensureTask(sessionID: string, title: string, schedulerConfig?: { stallThresholdSec?: number; maxRetry?: number }): ImperialTaskRecord {
@@ -48,6 +51,12 @@ export class ImperialTaskStateStore {
         lastProgressAt: now,
         stallSince: null,
         lastDispatchStatus: "queued",
+      },
+      control: {
+        status: "active",
+        previousStatus: null,
+        reason: null,
+        updatedAt: now,
       },
       createdAt: now,
       updatedAt: now,
@@ -179,6 +188,9 @@ export class ImperialTaskStateStore {
     try {
       const parsed = JSON.parse(readFileSync(this.filePath, "utf8")) as TaskStateFile
       if (parsed && typeof parsed === "object" && parsed.tasks) {
+        for (const task of Object.values(parsed.tasks)) {
+          normalizeTaskRecord(task)
+        }
         this.data = parsed
       }
     } catch {
@@ -196,6 +208,16 @@ export class ImperialTaskStateStore {
         error: error instanceof Error ? error.message : String(error),
       })
     }
+  }
+}
+
+function normalizeTaskRecord(task: ImperialTaskRecord): void {
+  if (task.control) return
+  task.control = {
+    status: "active",
+    previousStatus: null,
+    reason: null,
+    updatedAt: task.updatedAt,
   }
 }
 

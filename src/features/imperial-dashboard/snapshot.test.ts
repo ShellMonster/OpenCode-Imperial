@@ -33,10 +33,16 @@ function setupFixture(name: string): string {
               stallSince: null,
               lastDispatchStatus: "success",
             },
-            createdAt: "2026-01-01T00:00:00.000Z",
+          createdAt: "2026-01-01T00:00:00.000Z",
+          updatedAt: "2026-01-01T00:01:00.000Z",
+          control: {
+            status: "active",
+            previousStatus: null,
+            reason: null,
             updatedAt: "2026-01-01T00:01:00.000Z",
           },
-          s2: {
+        },
+        s2: {
             id: "task-2",
             sessionID: "s2",
             title: "Review policy",
@@ -55,10 +61,16 @@ function setupFixture(name: string): string {
               stallSince: "2026-01-01T00:03:00.000Z",
               lastDispatchStatus: "timeout",
             },
-            createdAt: "2026-01-01T00:00:00.000Z",
+          createdAt: "2026-01-01T00:00:00.000Z",
+          updatedAt: "2026-01-01T00:03:00.000Z",
+          control: {
+            status: "stopped",
+            previousStatus: "active",
+            reason: "wait",
             updatedAt: "2026-01-01T00:03:00.000Z",
           },
         },
+      },
       },
       null,
       2,
@@ -88,6 +100,8 @@ describe("imperial dashboard snapshot", () => {
     expect(snapshot.byState.Menxia).toBe(1)
     expect(snapshot.tasks[0].updatedAt >= snapshot.tasks[1].updatedAt).toBe(true)
     expect(snapshot.recentAudit.length).toBe(2)
+    expect(snapshot.byControl.active).toBe(1)
+    expect(snapshot.byControl.stopped).toBe(1)
   })
 
   test("builds task detail with merged activity", () => {
@@ -98,5 +112,12 @@ describe("imperial dashboard snapshot", () => {
     expect(detail?.activity.length).toBe(2)
     expect(detail?.activity[0].kind).toBe("flow")
     expect(detail?.activity[1].kind).toBe("progress")
+  })
+
+  test("filters by control and search query", () => {
+    const dir = setupFixture("filter")
+    const snapshot = buildImperialDashboardSnapshot(dir, { control: "stopped", q: "review" })
+    expect(snapshot.total).toBe(1)
+    expect(snapshot.tasks[0].sessionID).toBe("s2")
   })
 })

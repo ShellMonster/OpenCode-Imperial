@@ -8,6 +8,7 @@ export type SchedulerCheckResult =
 export function evaluateTaskScheduler(task: ImperialTaskRecord, now: Date): SchedulerCheckResult {
   if (!task.scheduler.enabled) return { type: "none" }
   if (task.state === "Done") return { type: "none" }
+  if (task.control?.status && task.control.status !== "active") return { type: "none" }
 
   const elapsedSec =
     (now.getTime() - new Date(task.scheduler.lastProgressAt).getTime()) / 1000

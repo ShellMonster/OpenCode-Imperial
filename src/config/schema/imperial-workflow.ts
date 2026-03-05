@@ -39,6 +39,7 @@ export const ImperialWorkflowConfigSchema = z.object({
     host: z.string().optional(),
     port: z.number().int().min(1).max(65535).optional(),
     refresh_ms: z.number().int().min(300).max(10000).optional(),
+    auth_token: z.string().min(8).optional(),
   }).optional(),
 })
 

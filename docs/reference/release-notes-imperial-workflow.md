@@ -14,6 +14,8 @@ Added a configurable imperial governance layer for agent delegation:
 - Scheduler checks for stalled sessions (`retry` / `escalate`)
 - New tool: `imperial_task_activity`
 - New lightweight dashboard runtime (`/imperial-dashboard`, SSE snapshot stream)
+- Dashboard action APIs with strict transition checks (`stop/resume/cancel`)
+- Snapshot query filters and optional token auth (`dashboard.auth_token`)
 
 ## New Config
 

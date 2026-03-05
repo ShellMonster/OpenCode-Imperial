@@ -1,6 +1,6 @@
 # Imperial Dashboard (Plan B)
 
-A lightweight real-time dashboard is now available for imperial workflow sessions.
+A lightweight real-time dashboard is available for imperial workflow sessions.
 
 ## Endpoints
 
@@ -8,7 +8,37 @@ A lightweight real-time dashboard is now available for imperial workflow session
 - `GET /imperial-dashboard/health`
 - `GET /imperial-dashboard/api/snapshot`
 - `GET /imperial-dashboard/api/tasks/:sessionID`
+- `POST /imperial-dashboard/api/tasks/:sessionID/actions`
 - `GET /imperial-dashboard/events` (SSE)
+
+## Action API
+
+Request body:
+
+```json
+{
+  "action": "stop | resume | cancel",
+  "reason": "optional"
+}
+```
+
+Strict transition rules:
+
+- `stop`: only when control status is `active`
+- `resume`: only when control status is `stopped`
+- `cancel`: blocked only when already cancelled
+- all actions are blocked when task state is `Done`
+
+## Snapshot Query Params
+
+- `state`
+- `org`
+- `q`
+- `control` (`active|stopped|cancelled`)
+- `sort` (`updatedAt|createdAt|title|state`)
+- `order` (`asc|desc`)
+- `limit`
+- `offset`
 
 ## Configuration
 
@@ -20,7 +50,8 @@ A lightweight real-time dashboard is now available for imperial workflow session
       "enabled": true,
       "host": "127.0.0.1",
       "port": 7897,
-      "refresh_ms": 1500
+      "refresh_ms": 1500,
+      "auth_token": "change-this-token"
     }
   }
 }
@@ -33,6 +64,13 @@ Defaults:
 - `dashboard.port = 7897`
 - `dashboard.refresh_ms = 1500`
 
+## Authentication (Optional)
+
+When `auth_token` is configured:
+
+- API/Page: pass via `Authorization: Bearer <token>` or `x-imperial-token: <token>` or `?token=<token>`.
+- SSE: use `?token=<token>`.
+
 ## Data Sources
 
 - `.sisyphus/imperial-workflow/tasks.json`
@@ -40,5 +78,5 @@ Defaults:
 
 ## Notes
 
-- The dashboard uses SSE push with periodic snapshots.
-- If the port is already occupied, startup failure is logged and plugin runtime continues.
+- Dashboard uses SSE push with periodic snapshots.
+- If port is occupied, startup failure is logged and plugin runtime continues.

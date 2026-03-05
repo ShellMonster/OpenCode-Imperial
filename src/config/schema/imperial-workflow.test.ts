@@ -60,6 +60,7 @@ describe("ImperialWorkflowConfigSchema", () => {
         host: "127.0.0.1",
         port: 7897,
         refresh_ms: 1000,
+        auth_token: "secret-token",
       },
     }
 
@@ -70,5 +71,6 @@ describe("ImperialWorkflowConfigSchema", () => {
     expect(parsed.dashboard?.enabled).toBe(true)
     expect(parsed.dashboard?.port).toBe(7897)
     expect(parsed.dashboard?.refresh_ms).toBe(1000)
+    expect(parsed.dashboard?.auth_token).toBe("secret-token")
   })
 })

@@ -15,11 +15,11 @@
 ## Runtime Check
 
 - [x] Typecheck passed.
-- [x] New tests passed (`imperial-dashboard`, config schema).
+- [x] New tests passed (`imperial-dashboard`, schema, workflow regressions).
 
 ## Follow-ups (Next Board Planning)
 
-- [ ] Add action APIs (stop/cancel/resume) with strict state transition checks.
-- [ ] Add filter/sort/search params for snapshot endpoint.
-- [ ] Add optional auth token for dashboard endpoints in shared environments.
-- [ ] Add richer UI panels (monitor/memorials/templates) aligned with edict layout.
+- [x] Add action APIs (stop/cancel/resume) with strict transition checks.
+- [x] Add filter/sort/search params for snapshot endpoint.
+- [x] Add optional auth token for dashboard endpoints in shared environments.
+- [x] Add richer UI panels (overview + task detail + memorial/audit) aligned with edict style.

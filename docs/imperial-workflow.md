@@ -107,6 +107,12 @@ Dashboard URL:
 
 More details: `docs/imperial-dashboard.md`
 
+Dashboard supports:
+
+- Task actions: `stop` / `resume` / `cancel`
+- Snapshot filtering: `state`, `org`, `q`, `control`, `sort`, `order`, `limit`, `offset`
+- Optional token auth via `dashboard.auth_token`
+
 ## Query Current Task Activity
 
 Use tool:

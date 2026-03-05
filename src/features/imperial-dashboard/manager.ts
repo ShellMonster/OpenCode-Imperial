@@ -6,6 +6,7 @@ export type ImperialDashboardRuntimeConfig = {
   host: string
   port: number
   refreshMs: number
+  authToken?: string
 }
 
 export class ImperialDashboardManager {
@@ -24,6 +25,7 @@ export class ImperialDashboardManager {
     const fetch = createImperialDashboardFetchHandler({
       directory: this.directory,
       refreshMs: this.config.refreshMs,
+      authToken: this.config.authToken,
     })
 
     try {
