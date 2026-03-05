@@ -16,6 +16,8 @@ Added a configurable imperial governance layer for agent delegation:
 - New lightweight dashboard runtime (`/imperial-dashboard`, SSE snapshot stream)
 - Dashboard action APIs with strict transition checks (`stop/resume/cancel`)
 - Snapshot query filters and optional token auth (`dashboard.auth_token`)
+- New strict governance flags: `strict_mapping`, `require_review_note`
+- Review lifecycle corrected to `zhongshu -> menxia -> zhongshu -> shangshu`
 
 ## New Config
 

@@ -23,6 +23,10 @@ export const ImperialWorkflowConfigSchema = z.object({
   enabled: z.boolean().optional(),
   /** Require Menxia review before Zhongshu can dispatch to Shangshu */
   strict_review: z.boolean().optional(),
+  /** Deny delegation when either side is unmapped */
+  strict_mapping: z.boolean().optional(),
+  /** Require non-empty review note before zhongshu can dispatch to shangshu */
+  require_review_note: z.boolean().optional(),
   /** Maximum allowed Zhongshu -> Menxia review rounds per session */
   max_review_round: z.number().int().min(1).max(10).optional(),
   /** Soft mapping: agent name/config key -> imperial role */

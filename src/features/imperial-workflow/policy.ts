@@ -29,6 +29,8 @@ export function createImperialWorkflowPolicy(config: ImperialWorkflowInputConfig
   return {
     enabled: config?.enabled ?? false,
     strictReview: config?.strict_review ?? true,
+    strictMapping: config?.strict_mapping ?? false,
+    requireReviewNote: config?.require_review_note ?? false,
     maxReviewRound: config?.max_review_round ?? 3,
     roleMap,
     permissionMatrix,
@@ -41,8 +43,9 @@ export function evaluateImperialDelegation(input: {
   sessionID: string
   callerAgent?: string
   targetAgent?: string
+  reviewNote?: string
 }): ImperialDelegationDecision {
-  const { policy, reviewStore, sessionID, callerAgent, targetAgent } = input
+  const { policy, reviewStore, sessionID, callerAgent, targetAgent, reviewNote } = input
   if (!policy.enabled) {
     return { allowed: true }
   }
@@ -50,8 +53,15 @@ export function evaluateImperialDelegation(input: {
   const callerRole = resolveRole(policy.roleMap, callerAgent)
   const targetRole = resolveRole(policy.roleMap, targetAgent)
 
-  // Soft mapping mode: only enforce when both sides are mapped to roles.
   if (!callerRole || !targetRole) {
+    if (policy.strictMapping) {
+      return {
+        allowed: false,
+        callerRole,
+        targetRole,
+        reason: "Imperial workflow denied: unmapped delegation is forbidden when strict_mapping=true.",
+      }
+    }
     return { allowed: true, callerRole, targetRole }
   }
 
@@ -66,7 +76,7 @@ export function evaluateImperialDelegation(input: {
   }
 
   if (callerRole === "zhongshu" && targetRole === "menxia") {
-    const state = reviewStore.markReviewed(sessionID)
+    const state = reviewStore.markReviewRequested(sessionID)
     if (state.reviewRounds > policy.maxReviewRound) {
       return {
         allowed: false,
@@ -78,6 +88,11 @@ export function evaluateImperialDelegation(input: {
     return { allowed: true, callerRole, targetRole }
   }
 
+  if (callerRole === "menxia" && targetRole === "zhongshu") {
+    reviewStore.markApproved(sessionID, reviewNote)
+    return { allowed: true, callerRole, targetRole }
+  }
+
   if (policy.strictReview && callerRole === "zhongshu" && targetRole === "shangshu") {
     const state = reviewStore.get(sessionID)
     if (!state.reviewed) {
@@ -86,6 +101,14 @@ export function evaluateImperialDelegation(input: {
         callerRole,
         targetRole,
         reason: "Imperial workflow denied: zhongshu must delegate to menxia for review before dispatching to shangshu.",
+      }
+    }
+    if (policy.requireReviewNote && !state.reviewNote?.trim()) {
+      return {
+        allowed: false,
+        callerRole,
+        targetRole,
+        reason: "Imperial workflow denied: review note is required before dispatching to shangshu.",
       }
     }
     reviewStore.consumeReview(sessionID)

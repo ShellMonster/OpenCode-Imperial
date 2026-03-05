@@ -7,6 +7,8 @@ describe("ImperialWorkflowConfigSchema", () => {
     const input = {
       enabled: true,
       strict_review: true,
+      strict_mapping: true,
+      require_review_note: true,
       max_review_round: 3,
       stall_threshold_sec: 180,
       max_retry: 2,
@@ -25,6 +27,8 @@ describe("ImperialWorkflowConfigSchema", () => {
 
     //#then
     expect(parsed.enabled).toBe(true)
+    expect(parsed.strict_mapping).toBe(true)
+    expect(parsed.require_review_note).toBe(true)
     expect(parsed.role_map?.prometheus).toBe("zhongshu")
     expect(parsed.permission_matrix?.zhongshu).toEqual(["menxia", "shangshu"])
     expect(parsed.stall_threshold_sec).toBe(180)

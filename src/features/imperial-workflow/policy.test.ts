@@ -60,6 +60,13 @@ describe("imperial workflow policy", () => {
       callerAgent: "prometheus",
       targetAgent: "momus",
     })
+    const approvalStep = evaluateImperialDelegation({
+      policy,
+      reviewStore,
+      sessionID: "s-3",
+      callerAgent: "momus",
+      targetAgent: "prometheus",
+    })
     const secondAttempt = evaluateImperialDelegation({
       policy,
       reviewStore,
@@ -71,6 +78,7 @@ describe("imperial workflow policy", () => {
     //#then
     expect(firstAttempt.allowed).toBe(false)
     expect(reviewStep.allowed).toBe(true)
+    expect(approvalStep.allowed).toBe(true)
     expect(secondAttempt.allowed).toBe(true)
   })
 
@@ -122,6 +130,67 @@ describe("imperial workflow policy", () => {
     expect(result.allowed).toBe(true)
   })
 
+  test("denies unmapped delegation in strict mapping mode", () => {
+    //#given
+    const policy = createImperialWorkflowPolicy({
+      enabled: true,
+      strict_mapping: true,
+    })
+    const reviewStore = new ImperialSessionReviewStore()
+
+    //#when
+    const result = evaluateImperialDelegation({
+      policy,
+      reviewStore,
+      sessionID: "s-5b",
+      callerAgent: "prometheus",
+      targetAgent: "explore",
+    })
+
+    //#then
+    expect(result.allowed).toBe(false)
+    expect(result.reason).toContain("unmapped")
+  })
+
+  test("requires review note when configured", () => {
+    //#given
+    const policy = createImperialWorkflowPolicy({
+      enabled: true,
+      strict_review: true,
+      require_review_note: true,
+    })
+    const reviewStore = new ImperialSessionReviewStore()
+
+    //#when
+    const requestReview = evaluateImperialDelegation({
+      policy,
+      reviewStore,
+      sessionID: "s-note",
+      callerAgent: "prometheus",
+      targetAgent: "momus",
+    })
+    const approveWithoutNote = evaluateImperialDelegation({
+      policy,
+      reviewStore,
+      sessionID: "s-note",
+      callerAgent: "momus",
+      targetAgent: "prometheus",
+    })
+    const dispatch = evaluateImperialDelegation({
+      policy,
+      reviewStore,
+      sessionID: "s-note",
+      callerAgent: "prometheus",
+      targetAgent: "atlas",
+    })
+
+    //#then
+    expect(requestReview.allowed).toBe(true)
+    expect(approveWithoutNote.allowed).toBe(true)
+    expect(dispatch.allowed).toBe(false)
+    expect(dispatch.reason).toContain("review note")
+  })
+
   test("supports full six-ministry mapping scenario", () => {
     //#given
     const policy = createImperialWorkflowPolicy({
@@ -148,6 +217,14 @@ describe("imperial workflow policy", () => {
       callerAgent: "prometheus",
       targetAgent: "momus",
     })
+    const approval = evaluateImperialDelegation({
+      policy,
+      reviewStore,
+      sessionID: "s-6",
+      callerAgent: "momus",
+      targetAgent: "prometheus",
+      reviewNote: "approved for dispatch",
+    })
     const dispatch = evaluateImperialDelegation({
       policy,
       reviewStore,
@@ -165,6 +242,7 @@ describe("imperial workflow policy", () => {
 
     //#then
     expect(review.allowed).toBe(true)
+    expect(approval.allowed).toBe(true)
     expect(dispatch.allowed).toBe(true)
     expect(ministry.allowed).toBe(true)
   })

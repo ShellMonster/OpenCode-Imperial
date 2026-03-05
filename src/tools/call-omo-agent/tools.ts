@@ -70,6 +70,7 @@ export function createCallOmoAgent(
         sessionID: toolCtx.sessionID,
         callerAgent: toolCtx.agent,
         targetAgent: normalizedAgent,
+        reviewNote: args.description,
       })
       recordImperialAudit(
         {

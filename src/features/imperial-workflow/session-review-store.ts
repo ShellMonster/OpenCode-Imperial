@@ -4,14 +4,37 @@ export class ImperialSessionReviewStore {
   private readonly state = new Map<string, ImperialSessionReviewState>()
 
   get(sessionID: string): ImperialSessionReviewState {
-    return this.state.get(sessionID) ?? { reviewRounds: 0, reviewed: false }
+    return this.state.get(sessionID) ?? {
+      reviewRounds: 0,
+      reviewed: false,
+      pendingReview: false,
+    }
   }
 
-  markReviewed(sessionID: string): ImperialSessionReviewState {
+  markReviewRequested(sessionID: string): ImperialSessionReviewState {
     const current = this.get(sessionID)
     const next = {
       reviewRounds: current.reviewRounds + 1,
+      reviewed: false,
+      pendingReview: true,
+      reviewNote: current.reviewNote,
+      reviewedAt: current.reviewedAt,
+    }
+    this.state.set(sessionID, next)
+    return next
+  }
+
+  markApproved(sessionID: string, reviewNote?: string): ImperialSessionReviewState {
+    const current = this.get(sessionID)
+    const normalizedNote = reviewNote?.trim()
+    const next = {
+      reviewRounds: current.reviewRounds,
       reviewed: true,
+      pendingReview: false,
+      reviewedAt: new Date().toISOString(),
+      reviewNote: normalizedNote && normalizedNote.length > 0
+        ? normalizedNote
+        : current.reviewNote,
     }
     this.state.set(sessionID, next)
     return next
@@ -22,6 +45,9 @@ export class ImperialSessionReviewStore {
     const next = {
       reviewRounds: current.reviewRounds,
       reviewed: false,
+      pendingReview: false,
+      reviewedAt: current.reviewedAt,
+      reviewNote: current.reviewNote,
     }
     this.state.set(sessionID, next)
     return next

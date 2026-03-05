@@ -4,7 +4,7 @@ This plugin now supports a configurable imperial governance layer with:
 
 - Soft role mapping (`agent -> role`)
 - Hard delegation gate (permission matrix)
-- Mandatory review gate (`zhongshu -> menxia -> shangshu`)
+- Mandatory review gate (`zhongshu -> menxia -> zhongshu -> shangshu`)
 - Taizi-style ingress classification for user directives
 - Lightweight scheduler checks (retry/escalation on stall)
 - Unified task activity query tool (`imperial_task_activity`)
@@ -17,6 +17,8 @@ This plugin now supports a configurable imperial governance layer with:
   "imperial_workflow": {
     "enabled": true,
     "strict_review": true,
+    "strict_mapping": true,
+    "require_review_note": true,
     "max_review_round": 3,
     "stall_threshold_sec": 180,
     "max_retry": 1,
@@ -113,6 +115,10 @@ Dashboard supports:
 - Snapshot filtering: `state`, `org`, `q`, `control`, `sort`, `order`, `limit`, `offset`
 - Optional token auth via `dashboard.auth_token`
 
+Recommended strict-mode preset:
+
+- `docs/imperial-zhongshu-preset.jsonc`
+
 ## Query Current Task Activity
 
 Use tool:
@@ -128,6 +134,7 @@ If `session_id` is omitted, current session is used.
 - If caller or target agent is **not mapped**, the gate does not block by default.
 - This avoids false-deny on legacy or temporary agents during rollout.
 - Hard enforcement applies only when both sides are mapped roles.
+- Set `strict_mapping=true` to enforce fully mapped institutional mode.
 
 ## Debugging Denied Delegation
 

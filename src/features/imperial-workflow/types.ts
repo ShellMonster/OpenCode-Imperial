@@ -6,6 +6,8 @@ export type ImperialPermissionMatrix = Record<ImperialRole, ImperialRole[]>
 export type ImperialWorkflowPolicy = {
   enabled: boolean
   strictReview: boolean
+  strictMapping: boolean
+  requireReviewNote: boolean
   maxReviewRound: number
   roleMap: ImperialRoleMap
   permissionMatrix: ImperialPermissionMatrix
@@ -21,6 +23,9 @@ export type ImperialDelegationDecision = {
 export type ImperialSessionReviewState = {
   reviewRounds: number
   reviewed: boolean
+  pendingReview: boolean
+  reviewedAt?: string
+  reviewNote?: string
 }
 
 export type ImperialWorkflowInputConfig = ImperialWorkflowConfig | undefined

@@ -1,0 +1,28 @@
+{
+  "imperial_workflow": {
+    "enabled": true,
+    "strict_review": true,
+    "strict_mapping": true,
+    "require_review_note": true,
+    "max_review_round": 3,
+    "stall_threshold_sec": 180,
+    "max_retry": 1,
+    "role_map": {
+      "prometheus": "zhongshu",
+      "momus": "menxia",
+      "atlas": "shangshu",
+      "librarian": "hubu",
+      "explore": "libu",
+      "hephaestus": "bingbu",
+      "oracle": "xingbu",
+      "sisyphus-junior": "gongbu",
+      "metis": "libu_hr"
+    },
+    "dashboard": {
+      "enabled": true,
+      "host": "127.0.0.1",
+      "port": 7897,
+      "refresh_ms": 1500
+    }
+  }
+}

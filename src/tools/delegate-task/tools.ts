@@ -257,6 +257,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
           sessionID: parentContext.sessionID,
           callerAgent: parentContext.agent,
           targetAgent: agentToUse,
+          reviewNote: args.description,
         })
         recordImperialAudit(
           {
