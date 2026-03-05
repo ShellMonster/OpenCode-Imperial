@@ -25,8 +25,10 @@ import {
   createTaskList,
   createTaskUpdateTool,
   createHashlineEditTool,
+  createImperialTaskActivityTool,
 } from "../tools"
 import { getMainSessionID } from "../features/claude-code-session-state"
+import { getImperialSessionReviewStore, getImperialTaskStateStore } from "../features/imperial-workflow"
 import { filterDisabledTools } from "../shared/disabled-tools"
 import { log } from "../shared"
 
@@ -48,7 +50,15 @@ export function createToolRegistry(args: {
   const { ctx, pluginConfig, managers, skillContext, availableCategories } = args
 
   const backgroundTools = createBackgroundTools(managers.backgroundManager, ctx.client)
-  const callOmoAgent = createCallOmoAgent(ctx, managers.backgroundManager, pluginConfig.disabled_agents ?? [])
+  const imperialReviewStore = getImperialSessionReviewStore()
+  const imperialTaskStateStore = getImperialTaskStateStore(ctx.directory)
+  const callOmoAgent = createCallOmoAgent(
+    ctx,
+    managers.backgroundManager,
+    pluginConfig.disabled_agents ?? [],
+    pluginConfig.imperial_workflow,
+    imperialReviewStore,
+  )
 
   const isMultimodalLookerEnabled = !(pluginConfig.disabled_agents ?? []).some(
     (agent) => agent.toLowerCase() === "multimodal-looker",
@@ -68,6 +78,9 @@ export function createToolRegistry(args: {
     availableCategories,
     availableSkills: skillContext.availableSkills,
     syncPollTimeoutMs: pluginConfig.background_task?.syncPollTimeoutMs,
+    imperialWorkflow: pluginConfig.imperial_workflow,
+    imperialReviewStore,
+    imperialTaskStateStore,
     onSyncSessionCreated: async (event) => {
       log("[index] onSyncSessionCreated callback", {
         sessionID: event.sessionID,
@@ -121,6 +134,10 @@ export function createToolRegistry(args: {
   const hashlineToolsRecord: Record<string, ToolDefinition> = hashlineEnabled
     ? { edit: createHashlineEditTool() }
     : {}
+  const imperialToolsRecord: Record<string, ToolDefinition> =
+    pluginConfig.imperial_workflow?.enabled
+      ? { imperial_task_activity: createImperialTaskActivityTool(ctx.directory) }
+      : {}
 
   const allTools: Record<string, ToolDefinition> = {
     ...builtinTools,
@@ -137,6 +154,7 @@ export function createToolRegistry(args: {
     interactive_bash,
     ...taskToolsRecord,
     ...hashlineToolsRecord,
+    ...imperialToolsRecord,
   }
 
   const filteredTools = filterDisabledTools(allTools, pluginConfig.disabled_tools)

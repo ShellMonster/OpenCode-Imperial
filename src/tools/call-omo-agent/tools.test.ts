@@ -99,4 +99,66 @@ describe("createCallOmoAgent", () => {
     //#then
     expect(result).not.toContain("disabled via disabled_agents")
   })
+
+  test("should deny delegation when imperial workflow matrix blocks mapped roles", async () => {
+    //#given
+    const toolDef = createCallOmoAgent(
+      mockCtx,
+      mockBackgroundManager,
+      [],
+      {
+        enabled: true,
+        role_map: {
+          prometheus: "zhongshu",
+          oracle: "bingbu",
+        },
+      },
+    )
+    const executeFunc = toolDef.execute as Function
+
+    //#when
+    const result = await executeFunc(
+      {
+        description: "Test",
+        prompt: "Test prompt",
+        subagent_type: "oracle",
+        run_in_background: true,
+      },
+      { sessionID: "test", messageID: "msg", agent: "prometheus", abort: new AbortController().signal }
+    )
+
+    //#then
+    expect(result).toContain("cannot delegate")
+  })
+
+  test("should allow zhongshu -> menxia in imperial workflow mapping", async () => {
+    //#given
+    const toolDef = createCallOmoAgent(
+      mockCtx,
+      mockBackgroundManager,
+      [],
+      {
+        enabled: true,
+        role_map: {
+          prometheus: "zhongshu",
+          momus: "menxia",
+        },
+      },
+    )
+    const executeFunc = toolDef.execute as Function
+
+    //#when
+    const result = await executeFunc(
+      {
+        description: "Test",
+        prompt: "Test prompt",
+        subagent_type: "momus",
+        run_in_background: true,
+      },
+      { sessionID: "test", messageID: "msg", agent: "prometheus", abort: new AbortController().signal }
+    )
+
+    //#then
+    expect(result).not.toContain("cannot delegate")
+  })
 })

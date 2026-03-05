@@ -902,3 +902,31 @@ describe("skills schema", () => {
     expect(result.success).toBe(true)
   })
 })
+
+describe("imperial_workflow schema", () => {
+  test("accepts imperial_workflow config", () => {
+    //#given
+    const input = {
+      imperial_workflow: {
+        enabled: true,
+        strict_review: true,
+        max_review_round: 3,
+        role_map: {
+          prometheus: "zhongshu",
+          momus: "menxia",
+          atlas: "shangshu",
+        },
+      },
+    }
+
+    //#when
+    const result = OhMyOpenCodeConfigSchema.safeParse(input)
+
+    //#then
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.imperial_workflow?.enabled).toBe(true)
+      expect(result.data.imperial_workflow?.role_map?.prometheus).toBe("zhongshu")
+    }
+  })
+})

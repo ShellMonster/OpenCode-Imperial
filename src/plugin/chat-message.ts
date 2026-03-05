@@ -6,6 +6,11 @@ import { setSessionModel } from "../shared/session-model-state"
 import { setSessionAgent } from "../features/claude-code-session-state"
 import { applyUltraworkModelOverrideOnMessage } from "./ultrawork-model-override"
 import { parseRalphLoopArguments } from "../hooks/ralph-loop/command-arguments"
+import {
+  extractImperialTaskTitle,
+  getImperialTaskStateStore,
+  isImperialWorkDirective,
+} from "../features/imperial-workflow"
 
 import type { CreatedHooks } from "../create-hooks"
 
@@ -70,6 +75,28 @@ export function createChatMessageHandler(args: {
     input: ChatMessageInput,
     output: ChatMessageHandlerOutput
   ): Promise<void> => {
+    const imperialEnabled = pluginConfig.imperial_workflow?.enabled ?? false
+    const imperialTaskStore = getImperialTaskStateStore(ctx.directory)
+
+    const userText = output.parts
+      ?.filter((part) => part.type === "text" && typeof part.text === "string")
+      .map((part) => part.text as string)
+      .join("\n")
+      .trim() ?? ""
+
+    if (imperialEnabled && userText && isImperialWorkDirective(userText)) {
+      const task = imperialTaskStore.ensureTask(input.sessionID, extractImperialTaskTitle(userText), {
+        stallThresholdSec: pluginConfig.imperial_workflow?.stall_threshold_sec,
+        maxRetry: pluginConfig.imperial_workflow?.max_retry,
+      })
+      if (task.flowLog.length === 0) {
+        imperialTaskStore.appendFlow(input.sessionID, "皇上", "太子", "下旨")
+        imperialTaskStore.appendFlow(input.sessionID, "太子", "中书省", "分拣并转交")
+        imperialTaskStore.setState(input.sessionID, "Zhongshu", "中书省")
+        imperialTaskStore.appendProgress(input.sessionID, "taizi", "已分拣为工作指令并建立任务")
+      }
+    }
+
     if (input.agent) {
       setSessionAgent(input.sessionID, input.agent)
     }

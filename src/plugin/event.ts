@@ -20,6 +20,7 @@ import { log } from "../shared/logger";
 import { shouldRetryError } from "../shared/model-error-classifier";
 import { clearSessionModel, setSessionModel } from "../shared/session-model-state";
 import { deleteSessionTools } from "../shared/session-tools-store";
+import { clearImperialSessionReview, getImperialTaskStateStore } from "../features/imperial-workflow";
 import { lspManager } from "../tools";
 
 import type { CreatedHooks } from "../create-hooks";
@@ -190,6 +191,15 @@ export function createEventHandler(args: {
           return;
         }
         recentRealIdles.set(sessionID, Date.now());
+
+        const schedulerDecision = getImperialTaskStateStore(ctx.directory).runSchedulerCheck(sessionID);
+        if (schedulerDecision.type !== "none") {
+          log("[imperial-workflow] scheduler action", {
+            sessionID,
+            type: schedulerDecision.type,
+            remark: schedulerDecision.remark,
+          });
+        }
       }
     }
 
@@ -237,6 +247,8 @@ export function createEventHandler(args: {
 
       if (sessionInfo?.id) {
         clearSessionAgent(sessionInfo.id);
+        clearImperialSessionReview(sessionInfo.id);
+        getImperialTaskStateStore(ctx.directory).clear(sessionInfo.id);
         lastHandledModelErrorMessageID.delete(sessionInfo.id);
         lastHandledRetryStatusKey.delete(sessionInfo.id);
         lastKnownModelBySession.delete(sessionInfo.id);

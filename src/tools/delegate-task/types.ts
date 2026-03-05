@@ -1,6 +1,9 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundManager } from "../../features/background-agent"
 import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config/schema"
+import type { ImperialWorkflowConfig } from "../../config/schema/imperial-workflow"
+import type { ImperialSessionReviewStore } from "../../features/imperial-workflow/session-review-store"
+import type { ImperialTaskStateStore } from "../../features/imperial-workflow/task-state-store"
 import type {
   AvailableCategory,
   AvailableSkill,
@@ -69,6 +72,9 @@ export interface DelegateTaskToolOptions {
   agentOverrides?: AgentOverrides
   onSyncSessionCreated?: (event: SyncSessionCreatedEvent) => Promise<void>
   syncPollTimeoutMs?: number
+  imperialWorkflow?: ImperialWorkflowConfig
+  imperialReviewStore?: ImperialSessionReviewStore
+  imperialTaskStateStore?: ImperialTaskStateStore
 }
 
 export interface BuildSystemContentInput {

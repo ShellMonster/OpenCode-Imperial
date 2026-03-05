@@ -20,6 +20,13 @@ import {
   executeBackgroundTask,
   executeSyncTask,
 } from "./executor"
+import {
+  createImperialWorkflowPolicy,
+  evaluateImperialDelegation,
+  ImperialSessionReviewStore,
+  getImperialTaskStateStore,
+  recordImperialAudit,
+} from "../../features/imperial-workflow"
 
 export { resolveCategoryConfig } from "./categories"
 export type { SyncSessionCreatedEvent, DelegateTaskToolOptions, BuildSystemContentInput } from "./types"
@@ -27,6 +34,10 @@ export { buildSystemContent } from "./prompt-builder"
 
 export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefinition {
   const { userCategories } = options
+  const imperialPolicy = createImperialWorkflowPolicy(options.imperialWorkflow)
+  const imperialReviewStore = options.imperialReviewStore ?? new ImperialSessionReviewStore()
+  const imperialTaskStateStore =
+    options.imperialTaskStateStore ?? getImperialTaskStateStore(options.directory)
 
   const allCategories = mergeCategories(userCategories)
   const categoryNames = Object.keys(allCategories)
@@ -153,6 +164,12 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       }
 
       const parentContext = await resolveParentContext(ctx, options.client)
+      if (imperialPolicy.enabled) {
+        imperialTaskStateStore.ensureTask(parentContext.sessionID, args.description, {
+          stallThresholdSec: options.imperialWorkflow?.stall_threshold_sec,
+          maxRetry: options.imperialWorkflow?.max_retry,
+        })
+      }
 
       if (args.session_id) {
         if (runInBackground) {
@@ -233,6 +250,52 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         agentToUse = resolution.agentToUse
         categoryModel = resolution.categoryModel
         fallbackChain = resolution.fallbackChain
+
+        const delegationDecision = evaluateImperialDelegation({
+          policy: imperialPolicy,
+          reviewStore: imperialReviewStore,
+          sessionID: parentContext.sessionID,
+          callerAgent: parentContext.agent,
+          targetAgent: agentToUse,
+        })
+        recordImperialAudit(
+          {
+            timestamp: new Date().toISOString(),
+            sessionID: parentContext.sessionID,
+            callerAgent: parentContext.agent,
+            targetAgent: agentToUse,
+            callerRole: delegationDecision.callerRole,
+            targetRole: delegationDecision.targetRole,
+            allowed: delegationDecision.allowed,
+            reason: delegationDecision.reason,
+          },
+          options.directory,
+        )
+        if (!delegationDecision.allowed) {
+          return delegationDecision.reason ?? "Imperial workflow denied this delegation."
+        }
+        if (imperialPolicy.enabled && delegationDecision.callerRole && delegationDecision.targetRole) {
+          imperialTaskStateStore.advanceFromDelegation({
+            sessionID: parentContext.sessionID,
+            callerRole: delegationDecision.callerRole,
+            targetRole: delegationDecision.targetRole,
+            callerAgent: parentContext.agent,
+            targetAgent: agentToUse,
+          })
+          imperialTaskStateStore.appendProgress(
+            parentContext.sessionID,
+            parentContext.agent ?? "unknown",
+            `delegated task to ${agentToUse}`,
+          )
+          log("[task] imperial delegation decision", {
+            sessionID: parentContext.sessionID,
+            callerAgent: parentContext.agent,
+            targetAgent: agentToUse,
+            callerRole: delegationDecision.callerRole,
+            targetRole: delegationDecision.targetRole,
+            allowed: delegationDecision.allowed,
+          })
+        }
       }
 
       const systemContent = buildSystemContent({

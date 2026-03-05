@@ -5,12 +5,25 @@ import type { BackgroundManager } from "../../features/background-agent"
 import { log } from "../../shared"
 import { executeBackground } from "./background-executor"
 import { executeSync } from "./sync-executor"
+import type { ImperialWorkflowConfig } from "../../config/schema/imperial-workflow"
+import {
+  createImperialWorkflowPolicy,
+  evaluateImperialDelegation,
+  ImperialSessionReviewStore,
+  getImperialTaskStateStore,
+  recordImperialAudit,
+} from "../../features/imperial-workflow"
 
 export function createCallOmoAgent(
   ctx: PluginInput,
   backgroundManager: BackgroundManager,
-  disabledAgents: string[] = []
+  disabledAgents: string[] = [],
+  imperialWorkflow?: ImperialWorkflowConfig,
+  imperialReviewStore?: ImperialSessionReviewStore,
 ): ToolDefinition {
+  const imperialPolicy = createImperialWorkflowPolicy(imperialWorkflow)
+  const reviewStore = imperialReviewStore ?? new ImperialSessionReviewStore()
+  const taskStateStore = getImperialTaskStateStore(ctx.directory)
   const agentDescriptions = ALLOWED_AGENTS.map(
     (name) => `- ${name}: Specialized agent for ${name} tasks`
   ).join("\n")
@@ -44,6 +57,58 @@ export function createCallOmoAgent(
 
       const normalizedAgent = args.subagent_type.toLowerCase() as AllowedAgentType
       args = { ...args, subagent_type: normalizedAgent }
+      if (imperialPolicy.enabled) {
+        taskStateStore.ensureTask(toolCtx.sessionID, args.description, {
+          stallThresholdSec: imperialWorkflow?.stall_threshold_sec,
+          maxRetry: imperialWorkflow?.max_retry,
+        })
+      }
+
+      const imperialDecision = evaluateImperialDelegation({
+        policy: imperialPolicy,
+        reviewStore,
+        sessionID: toolCtx.sessionID,
+        callerAgent: toolCtx.agent,
+        targetAgent: normalizedAgent,
+      })
+      recordImperialAudit(
+        {
+          timestamp: new Date().toISOString(),
+          sessionID: toolCtx.sessionID,
+          callerAgent: toolCtx.agent,
+          targetAgent: normalizedAgent,
+          callerRole: imperialDecision.callerRole,
+          targetRole: imperialDecision.targetRole,
+          allowed: imperialDecision.allowed,
+          reason: imperialDecision.reason,
+        },
+        ctx.directory,
+      )
+      if (!imperialDecision.allowed) {
+        return imperialDecision.reason ?? "Imperial workflow denied this delegation."
+      }
+      if (imperialPolicy.enabled && imperialDecision.callerRole && imperialDecision.targetRole) {
+        taskStateStore.advanceFromDelegation({
+          sessionID: toolCtx.sessionID,
+          callerRole: imperialDecision.callerRole,
+          targetRole: imperialDecision.targetRole,
+          callerAgent: toolCtx.agent,
+          targetAgent: normalizedAgent,
+        })
+        taskStateStore.appendProgress(
+          toolCtx.sessionID,
+          toolCtx.agent,
+          `delegated call_omo_agent to ${normalizedAgent}`,
+        )
+        log("[call_omo_agent] imperial delegation decision", {
+          sessionID: toolCtx.sessionID,
+          callerAgent: toolCtx.agent,
+          targetAgent: normalizedAgent,
+          callerRole: imperialDecision.callerRole,
+          targetRole: imperialDecision.targetRole,
+          allowed: imperialDecision.allowed,
+        })
+      }
 
       // Check if agent is disabled
       if (disabledAgents.some((disabled) => disabled.toLowerCase() === normalizedAgent)) {

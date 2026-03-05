@@ -9,6 +9,7 @@ export type {
   McpName,
   AgentName,
   HookName,
+  ImperialWorkflowConfig,
   BuiltinCommandName,
   SisyphusAgentConfig,
   ExperimentalConfig,
