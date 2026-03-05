@@ -8,6 +8,7 @@ This plugin now supports a configurable imperial governance layer with:
 - Taizi-style ingress classification for user directives
 - Lightweight scheduler checks (retry/escalation on stall)
 - Unified task activity query tool (`imperial_task_activity`)
+- Optional lightweight real-time dashboard (`HTTP + SSE`)
 
 ## Minimal Config (Three Departments)
 
@@ -81,6 +82,30 @@ When enabled, the plugin writes:
 
 - `.sisyphus/imperial-workflow/tasks.json`
 - `.sisyphus/imperial-workflow/audit.jsonl`
+
+## Dashboard Runtime (Plan B)
+
+When `imperial_workflow.enabled=true`, you can enable a lightweight local dashboard:
+
+```json
+{
+  "imperial_workflow": {
+    "enabled": true,
+    "dashboard": {
+      "enabled": true,
+      "host": "127.0.0.1",
+      "port": 7897,
+      "refresh_ms": 1500
+    }
+  }
+}
+```
+
+Dashboard URL:
+
+- `http://127.0.0.1:7897/imperial-dashboard`
+
+More details: `docs/imperial-dashboard.md`
 
 ## Query Current Task Activity
 

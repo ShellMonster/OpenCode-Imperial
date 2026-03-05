@@ -33,6 +33,13 @@ export const ImperialWorkflowConfigSchema = z.object({
   stall_threshold_sec: z.number().int().min(30).max(3600).optional(),
   /** Maximum auto retry count before escalation */
   max_retry: z.number().int().min(0).max(10).optional(),
+  /** Optional local dashboard runtime config */
+  dashboard: z.object({
+    enabled: z.boolean().optional(),
+    host: z.string().optional(),
+    port: z.number().int().min(1).max(65535).optional(),
+    refresh_ms: z.number().int().min(300).max(10000).optional(),
+  }).optional(),
 })
 
 export type ImperialRole = z.infer<typeof ImperialRoleSchema>

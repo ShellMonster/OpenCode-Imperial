@@ -4,6 +4,7 @@ import type { PluginContext, TmuxConfig } from "./plugin/types"
 
 import type { SubagentSessionCreatedEvent } from "./features/background-agent"
 import { BackgroundManager } from "./features/background-agent"
+import { ImperialDashboardManager } from "./features/imperial-dashboard/manager"
 import { SkillMcpManager } from "./features/skill-mcp-manager"
 import { initTaskToastManager } from "./features/task-toast-manager"
 import { TmuxSessionManager } from "./features/tmux-subagent"
@@ -14,6 +15,7 @@ export type Managers = {
   tmuxSessionManager: TmuxSessionManager
   backgroundManager: BackgroundManager
   skillMcpManager: SkillMcpManager
+  imperialDashboardManager: ImperialDashboardManager
   configHandler: ReturnType<typeof createConfigHandler>
 }
 
@@ -25,6 +27,13 @@ export function createManagers(args: {
   backgroundNotificationHookEnabled: boolean
 }): Managers {
   const { ctx, pluginConfig, tmuxConfig, modelCacheState, backgroundNotificationHookEnabled } = args
+  const dashboardConfig = pluginConfig.imperial_workflow?.dashboard
+  const imperialDashboardManager = new ImperialDashboardManager(ctx.directory, {
+    enabled: (pluginConfig.imperial_workflow?.enabled ?? false) && (dashboardConfig?.enabled ?? true),
+    host: dashboardConfig?.host ?? "127.0.0.1",
+    port: dashboardConfig?.port ?? 7897,
+    refreshMs: dashboardConfig?.refresh_ms ?? 1500,
+  })
 
   const tmuxSessionManager = new TmuxSessionManager(ctx, tmuxConfig)
 
@@ -57,6 +66,7 @@ export function createManagers(args: {
         tmuxSessionManager.cleanup().catch((error) => {
           log("[index] tmux cleanup error during shutdown:", error)
         })
+        imperialDashboardManager.stop()
       },
       enableParentSessionNotifications: backgroundNotificationHookEnabled,
     },
@@ -72,10 +82,16 @@ export function createManagers(args: {
     modelCacheState,
   })
 
+  imperialDashboardManager.start()
+  if (pluginConfig.imperial_workflow?.enabled && (dashboardConfig?.enabled ?? true)) {
+    log("[index] imperial dashboard active", { url: imperialDashboardManager.url() })
+  }
+
   return {
     tmuxSessionManager,
     backgroundManager,
     skillMcpManager,
+    imperialDashboardManager,
     configHandler,
   }
 }

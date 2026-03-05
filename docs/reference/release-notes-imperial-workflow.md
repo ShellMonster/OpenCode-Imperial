@@ -13,6 +13,7 @@ Added a configurable imperial governance layer for agent delegation:
 - Taizi-style ingress classification for work directives
 - Scheduler checks for stalled sessions (`retry` / `escalate`)
 - New tool: `imperial_task_activity`
+- New lightweight dashboard runtime (`/imperial-dashboard`, SSE snapshot stream)
 
 ## New Config
 

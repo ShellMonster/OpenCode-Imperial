@@ -50,4 +50,25 @@ describe("ImperialWorkflowConfigSchema", () => {
     expect(thrown).toBeDefined()
     expect((thrown as { issues?: Array<{ path?: string[] }> }).issues?.[0]?.path).toEqual(["max_review_round"])
   })
+
+  test("parses dashboard runtime options", () => {
+    //#given
+    const input = {
+      enabled: true,
+      dashboard: {
+        enabled: true,
+        host: "127.0.0.1",
+        port: 7897,
+        refresh_ms: 1000,
+      },
+    }
+
+    //#when
+    const parsed = ImperialWorkflowConfigSchema.parse(input)
+
+    //#then
+    expect(parsed.dashboard?.enabled).toBe(true)
+    expect(parsed.dashboard?.port).toBe(7897)
+    expect(parsed.dashboard?.refresh_ms).toBe(1000)
+  })
 })
