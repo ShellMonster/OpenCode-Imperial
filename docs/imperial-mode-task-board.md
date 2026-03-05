@@ -2,11 +2,11 @@
 
 ## In Progress
 
-- [ ] P1.2 Dashboard-runtime linkage (resume continuation pending)
+- [ ] (none)
 
 ## Pending
 
-- [ ] P2.1 Memorial summary + metrics panel
+- [ ] (none)
 
 ## Done
 
@@ -17,3 +17,5 @@
 - [x] P0.2 Review closure correctness
 - [x] P0.3 Zhongshu preset documentation
 - [x] P1.1 Dispatch closure hardening
+- [x] P1.2 Dashboard-runtime linkage
+- [x] P2.1 Memorial summary + metrics panel

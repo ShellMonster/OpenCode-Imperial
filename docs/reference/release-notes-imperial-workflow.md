@@ -19,7 +19,8 @@ Added a configurable imperial governance layer for agent delegation:
 - New strict governance flags: `strict_mapping`, `require_review_note`
 - Review lifecycle corrected to `zhongshu -> menxia -> zhongshu -> shangshu`
 - Dispatch closure guard: `shangshu -> zhongshu` is blocked without returned ministry receipt
-- Runtime bridge for dashboard `stop/cancel` (best-effort parent abort + descendant cancel)
+- Runtime bridge for dashboard actions (`stop/cancel/resume`) for session/task operations
+- Memorial summary API (`/imperial-dashboard/api/memorials/summary`) and metrics panel
 
 ## New Config
 

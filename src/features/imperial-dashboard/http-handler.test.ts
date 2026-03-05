@@ -75,6 +75,15 @@ describe("imperial dashboard http handler", () => {
     expect(payload.task.sessionID).toBe("s1")
   })
 
+  test("returns memorial summary", async () => {
+    const handler = createImperialDashboardFetchHandler({ directory: fixtureDir(), refreshMs: 800 })
+    const response = await handler(new Request("http://127.0.0.1/imperial-dashboard/api/memorials/summary"))
+
+    expect(response.status).toBe(200)
+    const payload = (await response.json()) as { totals: { tasks: number } }
+    expect(payload.totals.tasks).toBe(1)
+  })
+
   test("applies task action with strict transition", async () => {
     const dir = fixtureDir()
     const handler = createImperialDashboardFetchHandler({ directory: dir, refreshMs: 800 })

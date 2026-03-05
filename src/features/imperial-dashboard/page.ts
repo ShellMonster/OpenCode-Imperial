@@ -58,6 +58,8 @@ export function renderImperialDashboardPage(): string {
     <aside class="card">
       <h3 style="margin:0 0 8px;">Task Detail</h3>
       <div id="detail" class="muted">click a task to inspect</div>
+      <h3 style="margin:14px 0 8px;">Memorial Summary</h3>
+      <div id="memorial" class="scroll"></div>
       <h3 style="margin:14px 0 8px;">Recent Audit</h3>
       <div id="audit" class="scroll"></div>
     </aside>
@@ -73,6 +75,7 @@ export function renderImperialDashboardPage(): string {
       rows: document.getElementById('rows'),
       metrics: document.getElementById('metrics'),
       detail: document.getElementById('detail'),
+      memorial: document.getElementById('memorial'),
       audit: document.getElementById('audit'),
       q: document.getElementById('q'),
       state: document.getElementById('state'),
@@ -133,6 +136,15 @@ export function renderImperialDashboardPage(): string {
       dom.audit.innerHTML = '<pre>' + esc(JSON.stringify(data.recentAudit.slice(0, 16), null, 2)) + '</pre>'
     }
 
+    async function pullMemorial(){
+      const res = await fetch('/imperial-dashboard/api/memorials/summary' + (token ? ('?token=' + encodeURIComponent(token)) : ''), {
+        headers: token ? { 'x-imperial-token': token } : {}
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      dom.memorial.innerHTML = '<pre>' + esc(JSON.stringify(data, null, 2)) + '</pre>'
+    }
+
     async function openDetail(sessionID){
       const url = '/imperial-dashboard/api/tasks/' + encodeURIComponent(sessionID) + (token ? ('?token=' + encodeURIComponent(token)) : '')
       const res = await fetch(url)
@@ -167,6 +179,7 @@ export function renderImperialDashboardPage(): string {
       const res = await fetch('/imperial-dashboard/api/snapshot?' + queryString(), { headers: token ? { 'x-imperial-token': token } : {} })
       if (!res.ok) return
       render(await res.json())
+      pullMemorial()
     }
 
     function bind(){

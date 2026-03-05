@@ -24,4 +24,5 @@
 - [x] Add optional auth token for dashboard endpoints in shared environments.
 - [x] Add richer UI panels (overview + task detail + memorial/audit) aligned with edict style.
 - [x] Add best-effort runtime bridge for stop/cancel actions.
-- [ ] Add full runtime continuation bridge for resume action.
+- [x] Add runtime continuation bridge for resume action (descendant background tasks).
+- [x] Add memorial summary endpoint and metrics panel.

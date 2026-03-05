@@ -25,6 +25,29 @@ export type ImperialDashboardSnapshot = {
   recentAudit: Array<Record<string, unknown>>
 }
 
+export type ImperialMemorialSummary = {
+  generatedAt: string
+  totals: {
+    tasks: number
+    done: number
+    activeControl: number
+    stoppedControl: number
+    cancelledControl: number
+  }
+  review: {
+    avgReviewRound: number
+    maxReviewRound: number
+  }
+  dispatch: {
+    assignmentTotal: number
+    assignmentReturned: number
+    consolidatedTasks: number
+  }
+  audit: {
+    recentDenied: number
+  }
+}
+
 const DEFAULT_STATE_COUNTS: Record<string, number> = {
   Pending: 0,
   Zhongshu: 0,
@@ -62,6 +85,48 @@ export function buildImperialTaskDetail(directory: string, sessionID: string): {
   const activity = [...flow, ...progress].sort((a, b) => a.at.localeCompare(b.at))
 
   return { task, activity }
+}
+
+export function buildImperialMemorialSummary(directory: string): ImperialMemorialSummary {
+  const tasks = loadTasks(directory)
+  const audit = loadRecentAudit(directory, 200)
+
+  const totalReview = tasks.reduce((sum, task) => sum + (task.reviewRound ?? 0), 0)
+  const maxReviewRound = tasks.reduce((max, task) => Math.max(max, task.reviewRound ?? 0), 0)
+  const assignmentTotal = tasks.reduce((sum, task) => sum + (task.dispatch?.assignments.length ?? 0), 0)
+  const assignmentReturned = tasks.reduce(
+    (sum, task) => sum + (task.dispatch?.assignments.filter((item) => item.status === "returned").length ?? 0),
+    0,
+  )
+  const consolidatedTasks = tasks.filter((task) => task.dispatch?.consolidated).length
+  const recentDenied = audit.filter((item) => item.allowed === false).length
+
+  const activeControl = tasks.filter((task) => (task.control?.status ?? "active") === "active").length
+  const stoppedControl = tasks.filter((task) => (task.control?.status ?? "active") === "stopped").length
+  const cancelledControl = tasks.filter((task) => (task.control?.status ?? "active") === "cancelled").length
+
+  return {
+    generatedAt: new Date().toISOString(),
+    totals: {
+      tasks: tasks.length,
+      done: tasks.filter((task) => task.state === "Done").length,
+      activeControl,
+      stoppedControl,
+      cancelledControl,
+    },
+    review: {
+      avgReviewRound: tasks.length > 0 ? Number((totalReview / tasks.length).toFixed(2)) : 0,
+      maxReviewRound,
+    },
+    dispatch: {
+      assignmentTotal,
+      assignmentReturned,
+      consolidatedTasks,
+    },
+    audit: {
+      recentDenied,
+    },
+  }
 }
 
 function applyQuery(tasks: ImperialTaskRecord[], query: ImperialDashboardSnapshotQuery): ImperialTaskRecord[] {

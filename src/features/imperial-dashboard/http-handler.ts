@@ -1,6 +1,11 @@
 import { isAuthorized } from "./auth"
 import { renderImperialDashboardPage } from "./page"
-import { buildImperialDashboardSnapshot, buildImperialTaskDetail, type ImperialDashboardSnapshotQuery } from "./snapshot"
+import {
+  buildImperialDashboardSnapshot,
+  buildImperialMemorialSummary,
+  buildImperialTaskDetail,
+  type ImperialDashboardSnapshotQuery,
+} from "./snapshot"
 import { applyTaskAction } from "./task-store"
 
 type Options = {
@@ -39,6 +44,10 @@ export function createImperialDashboardFetchHandler(options: Options): (request:
 
     if (path === "/imperial-dashboard/api/snapshot") {
       return json(buildImperialDashboardSnapshot(directory, parseSnapshotQuery(url)))
+    }
+
+    if (path === "/imperial-dashboard/api/memorials/summary") {
+      return json(buildImperialMemorialSummary(directory))
     }
 
     if (path.startsWith("/imperial-dashboard/api/tasks/") && path.endsWith("/actions") && request.method === "POST") {

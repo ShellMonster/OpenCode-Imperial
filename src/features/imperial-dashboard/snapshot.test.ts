@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { tmpdir } from "node:os"
-import { buildImperialDashboardSnapshot, buildImperialTaskDetail } from "./snapshot"
+import { buildImperialDashboardSnapshot, buildImperialMemorialSummary, buildImperialTaskDetail } from "./snapshot"
 
 function setupFixture(name: string): string {
   const dir = join(tmpdir(), `omo-imperial-dashboard-${name}-${Date.now()}`)
@@ -119,5 +119,13 @@ describe("imperial dashboard snapshot", () => {
     const snapshot = buildImperialDashboardSnapshot(dir, { control: "stopped", q: "review" })
     expect(snapshot.total).toBe(1)
     expect(snapshot.tasks[0].sessionID).toBe("s2")
+  })
+
+  test("builds memorial summary metrics", () => {
+    const dir = setupFixture("memorial")
+    const summary = buildImperialMemorialSummary(dir)
+    expect(summary.totals.tasks).toBe(2)
+    expect(summary.dispatch.consolidatedTasks).toBeGreaterThanOrEqual(0)
+    expect(summary.review.maxReviewRound).toBe(2)
   })
 })

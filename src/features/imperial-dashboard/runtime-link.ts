@@ -13,9 +13,32 @@ export function createImperialDashboardRuntimeLink(ctx: PluginInput, backgroundM
     const { action, sessionID, reason } = input
 
     if (action === "resume") {
+      const descendants = backgroundManager.getAllDescendantTasks(sessionID)
+      const resumable = descendants.filter(
+        (task) =>
+          Boolean(task.sessionID) &&
+          (task.status === "cancelled" || task.status === "interrupt" || task.status === "error"),
+      )
+      let resumed = 0
+      for (const task of resumable) {
+        try {
+          await backgroundManager.resume({
+            sessionId: task.sessionID!,
+            prompt: reason?.trim() || "Resume task execution after dashboard resume action.",
+            parentSessionID: sessionID,
+            parentMessageID: task.parentMessageID || "",
+            parentModel: task.parentModel,
+            parentAgent: task.parentAgent,
+            parentTools: task.parentTools,
+          })
+          resumed += 1
+        } catch {
+          continue
+        }
+      }
       return {
         ok: true,
-        note: "resume currently updates governance state only; runtime resume is not auto-triggered",
+        note: `runtime bridge: resumed ${resumed} descendant task(s)`,
       }
     }
 

@@ -23,15 +23,15 @@ Turn current imperial workflow into a complete `Zhongshu-centric` execution mode
 - [x] Dispatch closure hardening
   - [x] Track assignment receipts from six ministries.
   - [x] Add `shangshu` consolidation record before task enters `Done`.
-- [~] Dashboard-operation runtime linkage
+- [x] Dashboard-operation runtime linkage
   - [x] Stop/cancel bridges to runtime session/task controls.
-  - [ ] Resume bridge (full runtime continuation) pending.
+  - [x] Resume bridge for descendant background tasks.
 
 ### P2 (Could Have)
 
-- [ ] Institutional reporting
-  - [ ] Add imperial memorial summary endpoint.
-  - [ ] Add review quality metrics panel.
+- [x] Institutional reporting
+  - [x] Add imperial memorial summary endpoint.
+  - [x] Add review quality metrics panel.
 
 ## Acceptance Criteria
 

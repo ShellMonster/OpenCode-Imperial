@@ -7,6 +7,7 @@ A lightweight real-time dashboard is available for imperial workflow sessions.
 - `GET /imperial-dashboard`
 - `GET /imperial-dashboard/health`
 - `GET /imperial-dashboard/api/snapshot`
+- `GET /imperial-dashboard/api/memorials/summary`
 - `GET /imperial-dashboard/api/tasks/:sessionID`
 - `POST /imperial-dashboard/api/tasks/:sessionID/actions`
 - `GET /imperial-dashboard/events` (SSE)
