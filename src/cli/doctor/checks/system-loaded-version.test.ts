@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 
-import { getSuggestedInstallTag } from "./system-loaded-version"
+const { getSuggestedInstallTag } = await import("./system-loaded-version?direct-test")
 
 describe("system loaded version", () => {
   describe("getSuggestedInstallTag", () => {
