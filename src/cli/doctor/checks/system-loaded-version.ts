@@ -3,7 +3,7 @@ import { homedir } from "node:os"
 import { join } from "node:path"
 
 import { getLatestVersion } from "../../../hooks/auto-update-checker/checker"
-import { extractChannel } from "../../../hooks/auto-update-checker"
+import { extractChannel } from "../../../hooks/auto-update-checker/version-channel"
 import { PACKAGE_NAME } from "../constants"
 import { getOpenCodeCacheDir, parseJsonc } from "../../../shared"
 import { LEGACY_PLUGIN_PACKAGE_NAME } from "../../../shared/branding"
