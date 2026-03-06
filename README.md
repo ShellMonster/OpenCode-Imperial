@@ -1,6 +1,6 @@
 # OpenCode Imperial
 
-![OpenCode Imperial Hero](./.github/assets/opencode-imperial-hero-cn.jpg)
+![OpenCode Imperial Hero](./.github/assets/opencode-imperial-workflow-concept-cn.jpg)
 
 把 OpenCode 的多 Agent 编排，改造成一套可审议、可派发、可回执、可审计的三省六部工作流。
 
