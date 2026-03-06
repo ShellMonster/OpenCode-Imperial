@@ -1,13 +1,18 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 
+const originalChildProcess = await import("node:child_process")
+const originalModule = await import("node:module")
+
 const spawnSyncMock = mock(() => ({ status: 0 }))
 const resolveMock = mock(() => "/tmp/fake-binary")
 
 mock.module("node:child_process", () => ({
+  ...originalChildProcess,
   spawnSync: spawnSyncMock,
 }))
 
 mock.module("node:module", () => ({
+  ...originalModule,
   createRequire: () => ({
     resolve: resolveMock,
   }),
