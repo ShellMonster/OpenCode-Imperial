@@ -1,6 +1,7 @@
 import { describe, test, expect } from "bun:test"
 import { loadBuiltinCommands } from "./commands"
 import { HANDOFF_TEMPLATE } from "./templates/handoff"
+import { START_WORK_TEMPLATE } from "./templates/start-work"
 import type { BuiltinCommandName } from "./types"
 
 describe("loadBuiltinCommands", () => {
@@ -57,6 +58,18 @@ describe("loadBuiltinCommands", () => {
 
     //#then
     expect(commands.handoff.description).toContain("context summary")
+  })
+
+  test("should expose imperial start-work command wording", () => {
+    //#given - no disabled commands
+
+    //#when
+    const commands = loadBuiltinCommands()
+
+    //#then
+    expect(commands["start-work"].description).toContain("imperial execution session")
+    expect(commands["start-work"].template).toContain(START_WORK_TEMPLATE)
+    expect(commands["start-work"].template).toContain("尚书省(统筹执行)")
   })
 })
 

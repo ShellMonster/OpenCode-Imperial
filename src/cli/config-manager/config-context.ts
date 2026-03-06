@@ -1,8 +1,10 @@
 import { getOpenCodeConfigPaths } from "../../shared"
+import { LEGACY_PLUGIN_CONFIG_BASENAME } from "../../shared/branding"
 import type {
   OpenCodeBinaryType,
   OpenCodeConfigPaths,
 } from "../../shared/opencode-config-dir-types"
+import { join } from "node:path"
 
 export interface ConfigContext {
   binary: OpenCodeBinaryType
@@ -43,4 +45,8 @@ export function getConfigJsonc(): string {
 
 export function getOmoConfigPath(): string {
   return getConfigContext().paths.omoConfig
+}
+
+export function getLegacyOmoConfigPath(): string {
+  return join(getConfigDir(), `${LEGACY_PLUGIN_CONFIG_BASENAME}.json`)
 }

@@ -4,11 +4,11 @@ import { getSessionAgent, updateSessionAgent } from "../../features/claude-code-
 import { log } from "../../shared"
 import { getAgentConfigKey, getAgentDisplayName } from "../../shared/agent-display-names"
 
-const TOAST_TITLE = "NEVER Use Hephaestus with Non-GPT"
+const TOAST_TITLE = "非 GPT 模型不要使用 工部(深度执行)"
 const TOAST_MESSAGE = [
-  "Hephaestus is designed exclusively for GPT models.",
-  "Hephaestus is trash without GPT.",
-  "For Claude/Kimi/GLM models, always use Sisyphus.",
+  "工部(深度执行) 是面向 GPT 系模型设计的执行官。",
+  "离开 GPT 后，工部(深度执行) 的效果会明显下降。",
+  "使用 Claude/Kimi/GLM 时，请切换到 太子(总管执行)。",
 ].join("\n")
 const SISYPHUS_DISPLAY = getAgentDisplayName("sisyphus")
 

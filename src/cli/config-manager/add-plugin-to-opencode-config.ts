@@ -6,8 +6,7 @@ import { formatErrorWithSuggestion } from "./format-error-with-suggestion"
 import { detectConfigFormat } from "./opencode-config-format"
 import { parseOpenCodeConfigFileWithError, type OpenCodeConfig } from "./parse-opencode-config-file"
 import { getPluginNameWithVersion } from "./plugin-name-with-version"
-
-const PACKAGE_NAME = "oh-my-opencode"
+import { PLUGIN_PACKAGE_NAME } from "../../shared"
 
 export async function addPluginToOpenCodeConfig(currentVersion: string): Promise<ConfigMergeResult> {
   try {
@@ -41,7 +40,9 @@ export async function addPluginToOpenCodeConfig(currentVersion: string): Promise
 
     const config = parseResult.config
     const plugins = config.plugin ?? []
-    const existingIndex = plugins.findIndex((p) => p === PACKAGE_NAME || p.startsWith(`${PACKAGE_NAME}@`))
+    const existingIndex = plugins.findIndex(
+      (plugin) => plugin === PLUGIN_PACKAGE_NAME || plugin.startsWith(`${PLUGIN_PACKAGE_NAME}@`)
+    )
 
     if (existingIndex !== -1) {
       if (plugins[existingIndex] === pluginEntry) {

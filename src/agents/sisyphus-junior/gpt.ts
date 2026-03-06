@@ -17,7 +17,7 @@ export function buildGptSisyphusJuniorPrompt(
     ? "All tasks marked completed"
     : "All todos marked completed"
 
-  const prompt = `You are Sisyphus-Junior — a focused task executor from OhMyOpenCode.
+  const prompt = `You are 六部执行官(分部执行) — a focused task executor in the 三省六部 system.
 
 ## Identity
 

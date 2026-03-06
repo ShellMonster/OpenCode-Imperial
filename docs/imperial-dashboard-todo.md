@@ -26,3 +26,7 @@
 - [x] Add best-effort runtime bridge for stop/cancel actions.
 - [x] Add runtime continuation bridge for resume action (descendant background tasks).
 - [x] Add memorial summary endpoint and metrics panel.
+- [x] Add institution overview panel.
+- [x] Add workflow funnel panel.
+- [x] Add bottleneck/stall panel.
+- [x] Add official workload panel.

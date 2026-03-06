@@ -6,6 +6,7 @@ import { getLatestVersion } from "../../../hooks/auto-update-checker/checker"
 import { extractChannel } from "../../../hooks/auto-update-checker"
 import { PACKAGE_NAME } from "../constants"
 import { getOpenCodeCacheDir, parseJsonc } from "../../../shared"
+import { LEGACY_PLUGIN_PACKAGE_NAME } from "../../../shared/branding"
 
 interface PackageJsonShape {
   version?: string
@@ -56,12 +57,16 @@ function normalizeVersion(value: string | undefined): string | null {
 export function getLoadedPluginVersion(): LoadedVersionInfo {
   const cacheDir = resolveOpenCodeCacheDir()
   const cachePackagePath = join(cacheDir, "package.json")
-  const installedPackagePath = join(cacheDir, "node_modules", PACKAGE_NAME, "package.json")
+  const installedPackagePath = existsSync(join(cacheDir, "node_modules", PACKAGE_NAME, "package.json"))
+    ? join(cacheDir, "node_modules", PACKAGE_NAME, "package.json")
+    : join(cacheDir, "node_modules", LEGACY_PLUGIN_PACKAGE_NAME, "package.json")
 
   const cachePackage = readPackageJson(cachePackagePath)
   const installedPackage = readPackageJson(installedPackagePath)
 
-  const expectedVersion = normalizeVersion(cachePackage?.dependencies?.[PACKAGE_NAME])
+  const expectedVersion = normalizeVersion(
+    cachePackage?.dependencies?.[PACKAGE_NAME] ?? cachePackage?.dependencies?.[LEGACY_PLUGIN_PACKAGE_NAME]
+  )
   const loadedVersion = normalizeVersion(installedPackage?.version)
 
   return {

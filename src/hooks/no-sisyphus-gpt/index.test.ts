@@ -42,8 +42,8 @@ describe("no-sisyphus-gpt hook", () => {
     expect(output2.message.agent).toBe(HEPHAESTUS_DISPLAY)
     expect(showToast.mock.calls[0]?.[0]).toMatchObject({
       body: {
-        title: "NEVER Use Sisyphus with GPT",
-        message: expect.stringContaining("For GPT models, always use Hephaestus."),
+        title: "GPT 模型不要使用 太子(总管执行)",
+        message: expect.stringContaining("GPT 系模型请切换到 工部(深度执行)。"),
         variant: "error",
       },
     })

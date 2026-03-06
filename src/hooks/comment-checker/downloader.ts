@@ -12,6 +12,7 @@ import {
   getCachedBinaryPath as getCachedBinaryPathShared,
 } from "../../shared/binary-downloader"
 import { log } from "../../shared/logger"
+import { PLUGIN_CACHE_DIR_NAME, PLUGIN_PACKAGE_NAME } from "../../shared/branding"
 
 const DEBUG = process.env.COMMENT_CHECKER_DEBUG === "1"
 const DEBUG_FILE = join(tmpdir(), "comment-checker-debug.log")
@@ -40,7 +41,7 @@ const PLATFORM_MAP: Record<string, PlatformInfo> = {
 }
 
 /**
- * Get the cache directory for oh-my-opencode binaries.
+ * Get the cache directory for plugin binaries.
  * On Windows: Uses %LOCALAPPDATA% or %APPDATA% (Windows conventions)
  * On Unix: Follows XDG Base Directory Specification
  */
@@ -48,12 +49,12 @@ export function getCacheDir(): string {
   if (process.platform === "win32") {
     const localAppData = process.env.LOCALAPPDATA || process.env.APPDATA
     const base = localAppData || join(homedir(), "AppData", "Local")
-    return join(base, "oh-my-opencode", "bin")
+    return join(base, PLUGIN_CACHE_DIR_NAME, "bin")
   }
 
   const xdgCache = process.env.XDG_CACHE_HOME
   const base = xdgCache || join(homedir(), ".cache")
-  return join(base, "oh-my-opencode", "bin")
+  return join(base, PLUGIN_CACHE_DIR_NAME, "bin")
 }
 
 /**
@@ -113,7 +114,7 @@ export async function downloadCommentChecker(): Promise<string | null> {
   const downloadUrl = `https://github.com/${REPO}/releases/download/v${version}/${assetName}`
   
   debugLog(`Downloading from: ${downloadUrl}`)
-  log(`[oh-my-opencode] Downloading comment-checker binary...`)
+  log(`[${PLUGIN_PACKAGE_NAME}] Downloading comment-checker binary...`)
   
   try {
     // Ensure cache directory exists
@@ -139,14 +140,14 @@ export async function downloadCommentChecker(): Promise<string | null> {
     ensureExecutable(binaryPath)
     
     debugLog(`Successfully downloaded binary to: ${binaryPath}`)
-    log(`[oh-my-opencode] comment-checker binary ready.`)
+    log(`[${PLUGIN_PACKAGE_NAME}] comment-checker binary ready.`)
     
     return binaryPath
     
   } catch (err) {
     debugLog(`Failed to download: ${err}`)
-    log(`[oh-my-opencode] Failed to download comment-checker: ${err instanceof Error ? err.message : err}`)
-    log(`[oh-my-opencode] Comment checking disabled.`)
+    log(`[${PLUGIN_PACKAGE_NAME}] Failed to download comment-checker: ${err instanceof Error ? err.message : err}`)
+    log(`[${PLUGIN_PACKAGE_NAME}] Comment checking disabled.`)
     return null
   }
 }

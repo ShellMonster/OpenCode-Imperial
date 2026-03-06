@@ -35,7 +35,7 @@ export function createExploreAgent(model: string): AgentConfig {
 
   return {
     description:
-      'Contextual grep for codebases. Answers "Where is X?", "Which file has Y?", "Find the code that does Z". Fire multiple in parallel for broad searches. Specify thoroughness: "quick" for basic, "medium" for moderate, "very thorough" for comprehensive analysis. (Explore - OhMyOpenCode)',
+      '巡检司。负责代码库上下文检索，回答“X 在哪里”“哪个文件有 Y”“实现 Z 的代码在哪”。适合并行多路搜索；可指定 quick、medium、very thorough 控制搜索深度。 (巡检司)',
     mode: MODE,
     model,
     temperature: 0.1,

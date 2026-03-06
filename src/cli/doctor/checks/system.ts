@@ -6,6 +6,7 @@ import { findOpenCodeBinary, getOpenCodeVersion, compareVersions } from "./syste
 import { getPluginInfo } from "./system-plugin"
 import { getLatestPluginVersion, getLoadedPluginVersion, getSuggestedInstallTag } from "./system-loaded-version"
 import { parseJsonc } from "../../../shared"
+import { PLUGIN_COMMAND_NAME, PLUGIN_PACKAGE_NAME } from "../../../shared/branding"
 
 function isConfigValid(configPath: string | null): boolean {
   if (!configPath) return true
@@ -82,9 +83,9 @@ export async function checkSystem(): Promise<CheckResult> {
 
   if (!pluginInfo.registered) {
     issues.push({
-      title: "oh-my-opencode is not registered",
+      title: `${PLUGIN_PACKAGE_NAME} is not registered`,
       description: "Plugin entry is missing from OpenCode configuration.",
-      fix: "Run: bunx oh-my-opencode install",
+      fix: `Run: bunx ${PLUGIN_COMMAND_NAME} install`,
       severity: "error",
       affects: ["all agents"],
     })
@@ -108,7 +109,7 @@ export async function checkSystem(): Promise<CheckResult> {
     issues.push({
       title: "Loaded plugin is outdated",
       description: `Loaded ${systemInfo.loadedVersion}, latest ${latestVersion}.`,
-      fix: `Update: cd "${loadedInfo.cacheDir}" && bun add oh-my-opencode@${installTag}`,
+      fix: `Update: cd "${loadedInfo.cacheDir}" && bun add ${PLUGIN_PACKAGE_NAME}@${installTag}`,
       severity: "warning",
       affects: ["plugin features"],
     })

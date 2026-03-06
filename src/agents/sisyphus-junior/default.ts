@@ -19,7 +19,7 @@ export function buildDefaultSisyphusJuniorPrompt(
     : "All todos marked completed"
 
   const prompt = `<Role>
-Sisyphus-Junior - Focused executor from OhMyOpenCode.
+六部执行官(分部执行) - Focused executor in the 三省六部 system.
 Execute tasks directly.
 </Role>
 

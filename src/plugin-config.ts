@@ -9,6 +9,8 @@ import {
   parseJsonc,
   detectConfigFile,
   migrateConfigFile,
+  PLUGIN_CONFIG_BASENAME,
+  LEGACY_PLUGIN_CONFIG_BASENAME,
 } from "./shared";
 
 export function parseConfigPartially(
@@ -137,21 +139,27 @@ export function loadPluginConfig(
   directory: string,
   ctx: unknown
 ): OhMyOpenCodeConfig {
-  // User-level config path - prefer .jsonc over .json
+  // User-level config path - prefer new basename, fallback to legacy basename
   const configDir = getOpenCodeConfigDir({ binary: "opencode" });
-  const userBasePath = path.join(configDir, "oh-my-opencode");
+  const userBasePath = path.join(configDir, PLUGIN_CONFIG_BASENAME);
+  const userLegacyBasePath = path.join(configDir, LEGACY_PLUGIN_CONFIG_BASENAME);
   const userDetected = detectConfigFile(userBasePath);
-  const userConfigPath =
-    userDetected.format !== "none"
-      ? userDetected.path
+  const userLegacyDetected = detectConfigFile(userLegacyBasePath);
+  const userConfigPath = userDetected.format !== "none"
+    ? userDetected.path
+    : userLegacyDetected.format !== "none"
+      ? userLegacyDetected.path
       : userBasePath + ".json";
 
-  // Project-level config path - prefer .jsonc over .json
-  const projectBasePath = path.join(directory, ".opencode", "oh-my-opencode");
+  // Project-level config path - prefer new basename, fallback to legacy basename
+  const projectBasePath = path.join(directory, ".opencode", PLUGIN_CONFIG_BASENAME);
+  const projectLegacyBasePath = path.join(directory, ".opencode", LEGACY_PLUGIN_CONFIG_BASENAME);
   const projectDetected = detectConfigFile(projectBasePath);
-  const projectConfigPath =
-    projectDetected.format !== "none"
-      ? projectDetected.path
+  const projectLegacyDetected = detectConfigFile(projectLegacyBasePath);
+  const projectConfigPath = projectDetected.format !== "none"
+    ? projectDetected.path
+    : projectLegacyDetected.format !== "none"
+      ? projectLegacyDetected.path
       : projectBasePath + ".json";
 
   // Load user config first (base)

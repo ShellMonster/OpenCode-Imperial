@@ -5,6 +5,7 @@ import { existsSync } from "fs"
 import { LSPClient, lspManager } from "./client"
 import { findServerForExtension } from "./config"
 import type { ServerLookupResult } from "./types"
+import { PLUGIN_CONFIG_BASENAME } from "../../shared/branding"
 
 export function findWorkspaceRoot(filePath: string): string {
   let dir = resolve(filePath)
@@ -56,7 +57,7 @@ export function formatServerLookupError(result: Exclude<ServerLookupResult, { st
     ``,
     `Available servers: ${result.availableServers.slice(0, 10).join(", ")}${result.availableServers.length > 10 ? "..." : ""}`,
     ``,
-    `To add a custom server, configure 'lsp' in oh-my-opencode.json:`,
+    `To add a custom server, configure 'lsp' in ${PLUGIN_CONFIG_BASENAME}.json:`,
     `  {`,
     `    "lsp": {`,
     `      "my-server": {`,

@@ -237,7 +237,7 @@ describe("createAutoUpdateCheckerHook", () => {
     expect(mockShowVersionToast).toHaveBeenCalledWith(
       expect.anything(),
       "3.6.0",
-      expect.stringContaining("Sisyphus")
+      expect.stringContaining("太子(总管执行)")
     )
   })
 })

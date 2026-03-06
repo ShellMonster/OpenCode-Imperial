@@ -1,5 +1,6 @@
 import color from "picocolors"
 import type { VersionInfo } from "./types"
+import { PLUGIN_PACKAGE_NAME } from "../../shared/branding"
 
 const SYMBOLS = {
   check: color.green("[OK]"),
@@ -15,7 +16,7 @@ export function formatVersionOutput(info: VersionInfo): string {
   const lines: string[] = []
 
   lines.push("")
-  lines.push(color.bold(color.white("oh-my-opencode Version Information")))
+  lines.push(color.bold(color.white(`${PLUGIN_PACKAGE_NAME} Version Information`)))
   lines.push(color.dim("─".repeat(50)))
   lines.push("")
 
@@ -37,7 +38,7 @@ export function formatVersionOutput(info: VersionInfo): string {
       break
     case "outdated":
       lines.push(`  ${SYMBOLS.warn} ${color.yellow("Update available")}`)
-      lines.push(`  ${color.dim("Run:")} ${color.cyan("cd ~/.config/opencode && bun update oh-my-opencode")}`)
+      lines.push(`  ${color.dim("Run:")} ${color.cyan(`cd ~/.config/opencode && bun update ${PLUGIN_PACKAGE_NAME}`)}`)
       break
     case "local-dev":
       lines.push(`  ${SYMBOLS.dev} ${color.cyan("Running in local development mode")}`)

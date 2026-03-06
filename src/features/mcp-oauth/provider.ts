@@ -5,6 +5,7 @@ import type { OAuthServerMetadata } from "./discovery"
 import { getOrRegisterClient } from "./dcr"
 import type { ClientCredentials, ClientRegistrationStorage } from "./dcr"
 import { findAvailablePort } from "./callback-server"
+import { PLUGIN_PACKAGE_NAME } from "../../shared/branding"
 import {
   buildAuthorizationUrl,
   generateCodeChallenge,
@@ -99,7 +100,7 @@ export class McpOAuthProvider {
     const clientInfo = await getOrRegisterClient({
       registrationEndpoint: metadata.registrationEndpoint,
       serverIdentifier: this.serverUrl,
-      clientName: "oh-my-opencode",
+      clientName: PLUGIN_PACKAGE_NAME,
       redirectUris: [this.redirectUrl()],
       tokenEndpointAuthMethod: "none",
       clientId: this.configClientId,

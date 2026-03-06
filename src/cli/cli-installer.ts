@@ -1,5 +1,6 @@
 import color from "picocolors"
 import type { InstallArgs } from "./types"
+import { PLUGIN_COMMAND_NAME, PLUGIN_PACKAGE_NAME } from "../shared/branding"
 import {
   addAuthPlugins,
   addPluginToOpenCodeConfig,
@@ -34,7 +35,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     }
     console.log()
     printInfo(
-      "Usage: bunx oh-my-opencode install --no-tui --claude=<no|yes|max20> --gemini=<no|yes> --copilot=<no|yes>",
+      `Usage: bunx ${PLUGIN_COMMAND_NAME} install --no-tui --claude=<no|yes|max20> --gemini=<no|yes> --copilot=<no|yes>`,
     )
     console.log()
     return 1
@@ -67,7 +68,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
 
   const config = argsToConfig(args)
 
-  printStep(step++, totalSteps, "Adding oh-my-opencode plugin...")
+  printStep(step++, totalSteps, `Adding ${PLUGIN_PACKAGE_NAME} plugin...`)
   const pluginResult = await addPluginToOpenCodeConfig(version)
   if (!pluginResult.success) {
     printError(`Failed: ${pluginResult.error}`)
@@ -99,7 +100,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     step += 2
   }
 
-  printStep(step++, totalSteps, "Writing oh-my-opencode configuration...")
+  printStep(step++, totalSteps, `Writing ${PLUGIN_PACKAGE_NAME} configuration...`)
   const omoResult = writeOmoConfig(config)
   if (!omoResult.success) {
     printError(`Failed: ${omoResult.error}`)
@@ -113,7 +114,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     console.log()
     console.log(color.bgRed(color.white(color.bold(" CRITICAL WARNING "))))
     console.log()
-    console.log(color.red(color.bold("  Sisyphus agent is STRONGLY optimized for Claude Opus 4.5.")))
+    console.log(color.red(color.bold("  太子(总管执行) agent is STRONGLY optimized for Claude Opus 4.5.")))
     console.log(color.red("  Without Claude, you may experience significantly degraded performance:"))
     console.log(color.dim("    • Reduced orchestration quality"))
     console.log(color.dim("    • Weaker tool selection and delegation"))

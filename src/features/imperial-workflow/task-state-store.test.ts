@@ -79,4 +79,87 @@ describe("ImperialTaskStateStore", () => {
 
     rmSync(dir, { recursive: true, force: true })
   })
+
+  test("persists menxia review note and ministry return receipt details", () => {
+    //#given
+    const dir = createTempDir("review-receipt")
+    const store = new ImperialTaskStateStore(dir)
+    store.ensureTask("s-3", "review receipt")
+
+    //#when
+    store.advanceFromDelegation({
+      sessionID: "s-3",
+      callerRole: "zhongshu",
+      targetRole: "menxia",
+      callerAgent: "zhongshu",
+      targetAgent: "menxia",
+      note: "submit plan for seal review",
+    })
+    store.advanceFromDelegation({
+      sessionID: "s-3",
+      callerRole: "menxia",
+      targetRole: "zhongshu",
+      callerAgent: "menxia",
+      targetAgent: "zhongshu",
+      note: "approved for dispatch",
+    })
+    store.advanceFromDelegation({
+      sessionID: "s-3",
+      callerRole: "zhongshu",
+      targetRole: "shangshu",
+      callerAgent: "zhongshu",
+      targetAgent: "shangshu",
+      note: "forward to execution",
+    })
+    store.advanceFromDelegation({
+      sessionID: "s-3",
+      callerRole: "shangshu",
+      targetRole: "gongbu",
+      callerAgent: "shangshu",
+      targetAgent: "gongbu",
+      note: "implement runtime entry",
+    })
+    store.setState("s-3", "Doing", "工部")
+    store.advanceFromDelegation({
+      sessionID: "s-3",
+      callerRole: "gongbu",
+      targetRole: "shangshu",
+      callerAgent: "gongbu",
+      targetAgent: "shangshu",
+      note: "runtime entry completed",
+    })
+
+    //#then
+    const snapshot = store.get("s-3")
+    expect(snapshot?.review?.approvedBy).toBe("menxia")
+    expect(snapshot?.review?.note).toBe("approved for dispatch")
+    expect(snapshot?.dispatch?.assignments[0]?.status).toBe("returned")
+    expect(snapshot?.dispatch?.assignments[0]?.returnedBy).toBe("gongbu")
+    expect(snapshot?.dispatch?.assignments[0]?.returnNote).toBe("runtime entry completed")
+
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  test("preserves concurrent writes from multiple store instances in same workspace", () => {
+    //#given
+    const dir = createTempDir("concurrent-store")
+    const storeA = new ImperialTaskStateStore(dir)
+    const storeB = new ImperialTaskStateStore(dir)
+    storeA.ensureTask("s-4", "shared session")
+
+    //#when
+    storeA.appendProgress("s-4", "agent-a", "progress from A")
+    storeB.appendProgress("s-4", "agent-b", "progress from B")
+    storeA.appendFlow("s-4", "A", "B", "flow from A")
+    storeB.appendFlow("s-4", "B", "C", "flow from B")
+
+    //#then
+    const snapshot = new ImperialTaskStateStore(dir).get("s-4")
+    expect(snapshot?.progressLog.some((entry) => entry.agent === "agent-a")).toBe(true)
+    expect(snapshot?.progressLog.some((entry) => entry.agent === "agent-b")).toBe(true)
+    expect(snapshot?.flowLog.some((entry) => entry.remark === "flow from A")).toBe(true)
+    expect(snapshot?.flowLog.some((entry) => entry.remark === "flow from B")).toBe(true)
+
+    rmSync(dir, { recursive: true, force: true })
+  })
 })

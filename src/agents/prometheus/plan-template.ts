@@ -40,7 +40,7 @@ Generate plan to: \`.sisyphus/plans/{name}.md\`
 - [Finding 1]: [Implication]
 - [Finding 2]: [Recommendation]
 
-### Metis Review
+### 中书参议(Metis) Review
 **Identified Gaps** (addressed):
 - [Gap 1]: [How resolved]
 - [Gap 2]: [How resolved]
@@ -62,7 +62,7 @@ Generate plan to: \`.sisyphus/plans/{name}.md\`
 - [Non-negotiable requirement]
 
 ### Must NOT Have (Guardrails)
-- [Explicit exclusion from Metis review]
+- [Explicit exclusion from 中书参议(Metis) review]
 - [AI slop pattern to avoid]
 - [Scope boundary]
 

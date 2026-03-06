@@ -1,4 +1,5 @@
 import type { PluginInput } from "@opencode-ai/plugin"
+import { PLUGIN_DISPLAY_NAME } from "../../../shared/branding"
 import { log } from "../../../shared/logger"
 
 export async function showUpdateAvailableToast(
@@ -9,7 +10,7 @@ export async function showUpdateAvailableToast(
   await ctx.client.tui
     .showToast({
       body: {
-        title: `OhMyOpenCode ${latestVersion}`,
+        title: `${PLUGIN_DISPLAY_NAME} ${latestVersion}`,
         message: getToastMessage(true, latestVersion),
         variant: "info" as const,
         duration: 8000,
@@ -23,7 +24,7 @@ export async function showAutoUpdatedToast(ctx: PluginInput, oldVersion: string,
   await ctx.client.tui
     .showToast({
       body: {
-        title: "OhMyOpenCode Updated!",
+        title: `${PLUGIN_DISPLAY_NAME} Updated!`,
         message: `v${oldVersion} → v${newVersion}\nRestart OpenCode to apply.`,
         variant: "success" as const,
         duration: 8000,

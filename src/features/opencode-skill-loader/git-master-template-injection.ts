@@ -1,5 +1,8 @@
 import type { GitMasterConfig } from "../../config/schema"
 
+const DEFAULT_COMMIT_FOOTER = "Assisted-by: OpenCode Imperial"
+const DEFAULT_CO_AUTHOR = "Co-authored-by: OpenCode Imperial <noreply@opencode-imperial.local>"
+
 export function injectGitMasterConfig(template: string, config?: GitMasterConfig): string {
 	const commitFooter = config?.commit_footer ?? true
 	const includeCoAuthoredBy = config?.include_co_authored_by ?? true
@@ -12,14 +15,14 @@ export function injectGitMasterConfig(template: string, config?: GitMasterConfig
 
 	sections.push("### 5.5 Commit Footer & Co-Author")
 	sections.push("")
-	sections.push("Add Sisyphus attribution to EVERY commit:")
+	sections.push("Add OpenCode Imperial attribution to EVERY commit:")
 	sections.push("")
 
 	if (commitFooter) {
 		const footerText =
 			typeof commitFooter === "string"
 				? commitFooter
-				: "Ultraworked with [Sisyphus](https://github.com/code-yeongyu/oh-my-opencode)"
+				: DEFAULT_COMMIT_FOOTER
 		sections.push("1. **Footer in commit body:**")
 		sections.push("```")
 		sections.push(footerText)
@@ -30,7 +33,7 @@ export function injectGitMasterConfig(template: string, config?: GitMasterConfig
 	if (includeCoAuthoredBy) {
 		sections.push(`${commitFooter ? "2" : "1"}. **Co-authored-by trailer:**`)
 		sections.push("```")
-		sections.push("Co-authored-by: Sisyphus <clio-agent@sisyphuslabs.ai>")
+		sections.push(DEFAULT_CO_AUTHOR)
 		sections.push("```")
 		sections.push("")
 	}
@@ -39,18 +42,18 @@ export function injectGitMasterConfig(template: string, config?: GitMasterConfig
 		const footerText =
 			typeof commitFooter === "string"
 				? commitFooter
-				: "Ultraworked with [Sisyphus](https://github.com/code-yeongyu/oh-my-opencode)"
+				: DEFAULT_COMMIT_FOOTER
 		sections.push("**Example (both enabled):**")
 		sections.push("```bash")
 		sections.push(
-			`git commit -m "{Commit Message}" -m "${footerText}" -m "Co-authored-by: Sisyphus <clio-agent@sisyphuslabs.ai>"`
+			`git commit -m "{Commit Message}" -m "${footerText}" -m "${DEFAULT_CO_AUTHOR}"`
 		)
 		sections.push("```")
 	} else if (commitFooter) {
 		const footerText =
 			typeof commitFooter === "string"
 				? commitFooter
-				: "Ultraworked with [Sisyphus](https://github.com/code-yeongyu/oh-my-opencode)"
+				: DEFAULT_COMMIT_FOOTER
 		sections.push("**Example:**")
 		sections.push("```bash")
 		sections.push(`git commit -m "{Commit Message}" -m "${footerText}"`)
@@ -58,9 +61,7 @@ export function injectGitMasterConfig(template: string, config?: GitMasterConfig
 	} else if (includeCoAuthoredBy) {
 		sections.push("**Example:**")
 		sections.push("```bash")
-		sections.push(
-			"git commit -m \"{Commit Message}\" -m \"Co-authored-by: Sisyphus <clio-agent@sisyphuslabs.ai>\""
-		)
+		sections.push(`git commit -m "{Commit Message}" -m "${DEFAULT_CO_AUTHOR}"`)
 		sections.push("```")
 	}
 

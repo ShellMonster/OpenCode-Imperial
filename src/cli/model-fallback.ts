@@ -6,6 +6,7 @@ import type { InstallConfig } from "./types"
 
 import type { AgentConfig, CategoryConfig, GeneratedOmoConfig } from "./model-fallback-types"
 import { toProviderAvailability } from "./provider-availability"
+import { PLUGIN_SCHEMA_FILE_NAME } from "../shared/branding"
 import {
 	getSisyphusFallbackChain,
 	isAnyFallbackEntryAvailable,
@@ -19,7 +20,7 @@ export type { GeneratedOmoConfig } from "./model-fallback-types"
 const ZAI_MODEL = "zai-coding-plan/glm-4.7"
 
 const ULTIMATE_FALLBACK = "opencode/glm-4.7-free"
-const SCHEMA_URL = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json"
+const SCHEMA_URL = `https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/${PLUGIN_SCHEMA_FILE_NAME}`
 
 
 

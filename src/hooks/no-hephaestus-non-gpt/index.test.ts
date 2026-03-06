@@ -44,8 +44,8 @@ describe("no-hephaestus-non-gpt hook", () => {
     expect(output2.message.agent).toBe(SISYPHUS_DISPLAY)
     expect(showToast.mock.calls[0]?.[0]).toMatchObject({
       body: {
-        title: "NEVER Use Hephaestus with Non-GPT",
-        message: expect.stringContaining("Hephaestus is trash without GPT."),
+        title: "非 GPT 模型不要使用 工部(深度执行)",
+        message: expect.stringContaining("离开 GPT 后，工部(深度执行) 的效果会明显下降。"),
         variant: "error",
       },
     })
@@ -74,7 +74,7 @@ describe("no-hephaestus-non-gpt hook", () => {
     expect(output.message.agent).toBeUndefined()
     expect(showToast.mock.calls[0]?.[0]).toMatchObject({
       body: {
-        title: "NEVER Use Hephaestus with Non-GPT",
+        title: "非 GPT 模型不要使用 工部(深度执行)",
         variant: "warning",
       },
     })

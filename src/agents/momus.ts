@@ -198,7 +198,7 @@ export function createMomusAgent(model: string): AgentConfig {
 
   const base = {
     description:
-      "Expert reviewer for evaluating work plans against rigorous clarity, verifiability, and completeness standards. (Momus - OhMyOpenCode)",
+      "门下省给事中。负责审议工作计划，重点检查清晰度、可验证性与完整性。 (门下省给事中)",
     mode: MODE,
     model,
     temperature: 0.1,
@@ -229,7 +229,7 @@ export const momusPromptMetadata: AgentPromptMetadata = {
     },
   ],
   useWhen: [
-    "After Prometheus creates a work plan",
+    "After 中书省(制策规划) creates a work plan",
     "Before executing a complex todo list",
     "To validate plan quality before delegating to executors",
     "When plan needs rigorous review for ADHD-driven omissions",
@@ -239,5 +239,5 @@ export const momusPromptMetadata: AgentPromptMetadata = {
     "When user explicitly wants to skip review",
     "For trivial plans that don't need formal review",
   ],
-  keyTrigger: "Work plan created → invoke Momus for review before execution",
+  keyTrigger: "Work plan created → invoke 门下省给事中 for review before execution",
 }

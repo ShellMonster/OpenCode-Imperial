@@ -111,6 +111,7 @@ describe("start-work hook", () => {
       // then - should show resuming status
       expect(output.parts[0].text).toContain("RESUMING")
       expect(output.parts[0].text).toContain("test-plan")
+      expect(output.parts[0].text).toContain("Imperial Work Session")
     })
 
     test("should replace $SESSION_ID placeholder", async () => {
@@ -184,9 +185,9 @@ describe("start-work hook", () => {
       )
 
       // then - should auto-select the incomplete plan, not ask user
-      expect(output.parts[0].text).toContain("Auto-Selected Plan")
+      expect(output.parts[0].text).toContain("Auto-Selected Imperial Plan")
       expect(output.parts[0].text).toContain("plan-incomplete")
-      expect(output.parts[0].text).not.toContain("Multiple Plans Found")
+      expect(output.parts[0].text).not.toContain("Multiple Imperial Plans Found")
     })
 
     test("should wrap multiple plans message in system-reminder tag", async () => {
@@ -214,7 +215,7 @@ describe("start-work hook", () => {
       // then - should use system-reminder tag format
       expect(output.parts[0].text).toContain("<system-reminder>")
       expect(output.parts[0].text).toContain("</system-reminder>")
-      expect(output.parts[0].text).toContain("Multiple Plans Found")
+      expect(output.parts[0].text).toContain("Multiple Imperial Plans Found")
     })
 
     test("should use 'ask user' prompt style for multiple plans", async () => {
@@ -318,7 +319,7 @@ describe("start-work hook", () => {
 
       // then - should find plan without ultrawork suffix
       expect(output.parts[0].text).toContain("my-feature-plan")
-      expect(output.parts[0].text).toContain("Auto-Selected Plan")
+      expect(output.parts[0].text).toContain("Auto-Selected Imperial Plan")
     })
 
     test("should strip ulw keyword from plan name argument", async () => {
@@ -349,7 +350,7 @@ describe("start-work hook", () => {
 
       // then - should find plan without ulw suffix
       expect(output.parts[0].text).toContain("api-refactor")
-      expect(output.parts[0].text).toContain("Auto-Selected Plan")
+      expect(output.parts[0].text).toContain("Auto-Selected Imperial Plan")
     })
 
     test("should match plan by partial name", async () => {
@@ -380,7 +381,7 @@ describe("start-work hook", () => {
 
       // then - should find plan by partial match
       expect(output.parts[0].text).toContain("2026-01-15-feature-implementation")
-      expect(output.parts[0].text).toContain("Auto-Selected Plan")
+      expect(output.parts[0].text).toContain("Auto-Selected Imperial Plan")
     })
   })
 

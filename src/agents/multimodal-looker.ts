@@ -16,7 +16,7 @@ export function createMultimodalLookerAgent(model: string): AgentConfig {
 
   return {
     description:
-      "Analyze media files (PDFs, images, diagrams) that require interpretation beyond raw text. Extracts specific information or summaries from documents, describes visual content. Use when you need analyzed/extracted data rather than literal file contents. (Multimodal-Looker - OhMyOpenCode)",
+      "观象台。负责解析 PDF、图片、图表与示意图等非纯文本材料，提取关键信息、摘要与视觉结构描述。适合需要解释后的结论，而不是原始文件内容时调用。 (观象台)",
     mode: MODE,
     model,
     temperature: 0.1,

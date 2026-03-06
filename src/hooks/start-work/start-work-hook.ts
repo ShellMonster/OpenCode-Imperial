@@ -98,17 +98,17 @@ export function createStartWorkHook(ctx: PluginInput) {
 
           if (progress.isComplete) {
             contextInfo = `
-## Plan Already Complete
+## Imperial Plan Already Complete
 
 The requested plan "${getPlanName(matchedPlan)}" has been completed.
-All ${progress.total} tasks are done. Create a new plan with: /plan "your task"`
+All ${progress.total} tasks are done. Ask 中书省(制策规划) to draft a new plan with: /plan "your task"`
           } else {
             if (existingState) clearBoulderState(ctx.directory)
             const newState = createBoulderState(matchedPlan, sessionId, "atlas", worktreePath)
             writeBoulderState(ctx.directory, newState)
 
             contextInfo = `
-## Auto-Selected Plan
+## Auto-Selected Imperial Plan
 
 **Plan**: ${getPlanName(matchedPlan)}
 **Path**: ${matchedPlan}
@@ -117,7 +117,7 @@ All ${progress.total} tasks are done. Create a new plan with: /plan "your task"`
 **Started**: ${timestamp}
 ${worktreeBlock}
 
-boulder.json has been created. Read the plan and begin execution.`
+boulder.json has been created. Read the plan and begin execution through 尚书省(统筹执行).`
           }
         } else {
           const incompletePlans = allPlans.filter((p) => !getPlanProgress(p).isComplete)
@@ -130,7 +130,7 @@ boulder.json has been created. Read the plan and begin execution.`
               .join("\n")
 
             contextInfo = `
-## Plan Not Found
+## Imperial Plan Not Found
 
 Could not find a plan matching "${explicitPlanName}".
 
@@ -140,10 +140,10 @@ ${planList}
 Ask the user which plan to work on.`
           } else {
             contextInfo = `
-## Plan Not Found
+## Imperial Plan Not Found
 
 Could not find a plan matching "${explicitPlanName}".
-No incomplete plans available. Create a new plan with: /plan "your task"`
+No incomplete plans available. Ask 中书省(制策规划) to create a new plan with: /plan "your task"`
           }
         }
       } else if (existingState) {
@@ -168,7 +168,7 @@ No incomplete plans available. Create a new plan with: /plan "your task"`
           const worktreeDisplay = effectiveWorktree ? `\n**Worktree**: ${effectiveWorktree}` : worktreeBlock
 
           contextInfo = `
-## Active Work Session Found
+## Active Imperial Work Session Found
 
 **Status**: RESUMING existing work
 **Plan**: ${existingState.plan_name}
@@ -179,10 +179,10 @@ No incomplete plans available. Create a new plan with: /plan "your task"`
 ${worktreeDisplay}
 
 The current session (${sessionId}) has been added to session_ids.
-Read the plan file and continue from the first unchecked task.`
+Read the plan file and continue from the first unchecked task in the imperial chain.`
         } else {
           contextInfo = `
-## Previous Work Complete
+## Previous Imperial Work Complete
 
 The previous plan (${existingState.plan_name}) has been completed.
 Looking for new plans...`
@@ -198,14 +198,14 @@ Looking for new plans...`
 
         if (plans.length === 0) {
           contextInfo += `
-## No Plans Found
+## No Imperial Plans Found
 
-No Prometheus plan files found at .sisyphus/plans/
-Use Prometheus to create a work plan first: /plan "your task"`
+No 中书省(制策规划) plan files found at .sisyphus/plans/
+Use /plan to create a work plan first: /plan "your task"`
         } else if (incompletePlans.length === 0) {
           contextInfo += `
 
-## All Plans Complete
+## All Imperial Plans Complete
 
 All ${plans.length} plan(s) are complete. Create a new plan with: /plan "your task"`
         } else if (incompletePlans.length === 1) {
@@ -216,7 +216,7 @@ All ${plans.length} plan(s) are complete. Create a new plan with: /plan "your ta
 
           contextInfo += `
 
-## Auto-Selected Plan
+## Auto-Selected Imperial Plan
 
 **Plan**: ${getPlanName(planPath)}
 **Path**: ${planPath}
@@ -225,7 +225,7 @@ All ${plans.length} plan(s) are complete. Create a new plan with: /plan "your ta
 **Started**: ${timestamp}
 ${worktreeBlock}
 
-boulder.json has been created. Read the plan and begin execution.`
+boulder.json has been created. Read the plan and begin execution through 尚书省(统筹执行).`
         } else {
           const planList = incompletePlans
             .map((p, i) => {
@@ -238,7 +238,7 @@ boulder.json has been created. Read the plan and begin execution.`
           contextInfo += `
 
 <system-reminder>
-## Multiple Plans Found
+## Multiple Imperial Plans Found
 
 Current Time: ${timestamp}
 Session ID: ${sessionId}

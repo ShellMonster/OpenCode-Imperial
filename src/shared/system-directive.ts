@@ -1,29 +1,34 @@
 /**
- * Unified system directive prefix for oh-my-opencode internal messages.
+ * Unified system directive prefix for internal messages.
  * All system-generated messages should use this prefix for consistent filtering.
  *
- * Format: [SYSTEM DIRECTIVE: OH-MY-OPENCODE - {TYPE}]
+ * Format: [SYSTEM DIRECTIVE: OPENCODE-IMPERIAL - {TYPE}]
  */
+import { LEGACY_PLUGIN_SYSTEM_DIRECTIVE_PREFIX, PLUGIN_SYSTEM_DIRECTIVE_PREFIX } from "./branding"
 
-export const SYSTEM_DIRECTIVE_PREFIX = "[SYSTEM DIRECTIVE: OH-MY-OPENCODE"
+export const SYSTEM_DIRECTIVE_PREFIX = PLUGIN_SYSTEM_DIRECTIVE_PREFIX
 
 /**
  * Creates a system directive header with the given type.
  * @param type - The directive type (e.g., "TODO CONTINUATION", "RALPH LOOP")
- * @returns Formatted directive string like "[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION]"
+ * @returns Formatted directive string like "[SYSTEM DIRECTIVE: OPENCODE-IMPERIAL - TODO CONTINUATION]"
  */
 export function createSystemDirective(type: string): string {
   return `${SYSTEM_DIRECTIVE_PREFIX} - ${type}]`
 }
 
 /**
- * Checks if a message starts with the oh-my-opencode system directive prefix.
+ * Checks if a message starts with a known system directive prefix.
  * Used by keyword-detector and other hooks to skip system-generated messages.
  * @param text - The message text to check
  * @returns true if the message is a system directive
  */
 export function isSystemDirective(text: string): boolean {
-  return text.trimStart().startsWith(SYSTEM_DIRECTIVE_PREFIX)
+  const normalized = text.trimStart()
+  return (
+    normalized.startsWith(SYSTEM_DIRECTIVE_PREFIX) ||
+    normalized.startsWith(LEGACY_PLUGIN_SYSTEM_DIRECTIVE_PREFIX)
+  )
 }
 
 /**

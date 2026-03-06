@@ -12,6 +12,18 @@ A lightweight real-time dashboard is available for imperial workflow sessions.
 - `POST /imperial-dashboard/api/tasks/:sessionID/actions`
 - `GET /imperial-dashboard/events` (SSE)
 
+## Current Panels
+
+- Metrics overview
+- Task table with filter/sort/search
+- Task detail: 门下省审议 / 尚书省派发与回奏 / 六部回执 / 流转活动
+- Memorial summary
+- Recent audit
+- Institution overview
+- Workflow funnel
+- Bottlenecks / stalled tasks
+- Officials load
+
 ## Action API
 
 Request body:
@@ -64,7 +76,7 @@ Defaults:
 
 - `dashboard.enabled = true` (when `imperial_workflow.enabled = true`)
 - `dashboard.host = 127.0.0.1`
-- `dashboard.port = 7897`
+- `dashboard.port = 7897` (default base port; runtime will derive a workspace-specific port when left at default)
 - `dashboard.refresh_ms = 1500`
 
 ## Authentication (Optional)
@@ -82,4 +94,6 @@ When `auth_token` is configured:
 ## Notes
 
 - Dashboard uses SSE push with periodic snapshots.
-- If port is occupied, startup failure is logged and plugin runtime continues.
+- When multiple workspaces run concurrently, the default port is automatically derived per workspace to reduce conflicts.
+- If the chosen port is occupied, runtime will try nearby fallback ports before giving up.
+- Task state writes use a local lockfile plus atomic replace to reduce concurrent overwrite risk.

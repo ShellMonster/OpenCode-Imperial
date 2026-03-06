@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs"
 import { parseJsonc } from "../../shared"
 import type { ConfigMergeResult, InstallConfig } from "../types"
-import { getConfigDir, getOmoConfigPath } from "./config-context"
+import { getConfigDir, getLegacyOmoConfigPath, getOmoConfigPath } from "./config-context"
 import { deepMergeRecord } from "./deep-merge-record"
 import { ensureConfigDirectoryExists } from "./ensure-config-directory-exists"
 import { formatErrorWithSuggestion } from "./format-error-with-suggestion"
@@ -23,14 +23,16 @@ export function writeOmoConfig(installConfig: InstallConfig): ConfigMergeResult 
   }
 
   const omoConfigPath = getOmoConfigPath()
+  const legacyConfigPath = getLegacyOmoConfigPath()
 
   try {
     const newConfig = generateOmoConfig(installConfig)
 
-    if (existsSync(omoConfigPath)) {
+    if (existsSync(omoConfigPath) || existsSync(legacyConfigPath)) {
+      const existingPath = existsSync(omoConfigPath) ? omoConfigPath : legacyConfigPath
       try {
-        const stat = statSync(omoConfigPath)
-        const content = readFileSync(omoConfigPath, "utf-8")
+        const stat = statSync(existingPath)
+        const content = readFileSync(existingPath, "utf-8")
 
         if (stat.size === 0 || isEmptyOrWhitespace(content)) {
           writeFileSync(omoConfigPath, JSON.stringify(newConfig, null, 2) + "\n")
@@ -61,7 +63,7 @@ export function writeOmoConfig(installConfig: InstallConfig): ConfigMergeResult 
     return {
       success: false,
       configPath: omoConfigPath,
-      error: formatErrorWithSuggestion(err, "write oh-my-opencode config"),
+      error: formatErrorWithSuggestion(err, "write opencode-imperial config"),
     }
   }
 }

@@ -522,7 +522,7 @@ export function createHephaestusAgent(
 
   return {
     description:
-      "Autonomous Deep Worker - goal-oriented execution with GPT 5.2 Codex. Explores thoroughly before acting, uses explore/librarian agents for comprehensive context, completes tasks end-to-end. Inspired by AmpCode deep mode. (Hephaestus - OhMyOpenCode)",
+      "工部主事。面向 GPT Codex 的深度执行官，先充分勘察再行动，主动调用巡检司/典籍署补全上下文，并将任务端到端完成。 (工部主事)",
     mode: MODE,
     model,
     maxTokens: 32000,

@@ -13,8 +13,8 @@ describe("remapAgentKeysToDisplayNames", () => {
     const result = remapAgentKeysToDisplayNames(agents)
 
     // then known agents get display name keys only
-    expect(result["Sisyphus (Ultraworker)"]).toBeDefined()
-    expect(result["oracle"]).toBeDefined()
+    expect(result["太子(总管执行)"]).toBeDefined()
+    expect(result["刑部(疑难会审)"]).toBeDefined()
     expect(result["sisyphus"]).toBeUndefined()
   })
 
@@ -47,19 +47,19 @@ describe("remapAgentKeysToDisplayNames", () => {
     const result = remapAgentKeysToDisplayNames(agents)
 
     // then all get display name keys without lowercase duplicates
-    expect(result["Sisyphus (Ultraworker)"]).toBeDefined()
+    expect(result["太子(总管执行)"]).toBeDefined()
     expect(result["sisyphus"]).toBeUndefined()
-    expect(result["Hephaestus (Deep Agent)"]).toBeDefined()
+    expect(result["工部(深度执行)"]).toBeDefined()
     expect(result["hephaestus"]).toBeUndefined()
-    expect(result["Prometheus (Plan Builder)"]).toBeDefined()
+    expect(result["中书省(制策规划)"]).toBeDefined()
     expect(result["prometheus"]).toBeUndefined()
-    expect(result["Atlas (Plan Executor)"]).toBeDefined()
+    expect(result["尚书省(统筹执行)"]).toBeDefined()
     expect(result["atlas"]).toBeUndefined()
-    expect(result["Metis (Plan Consultant)"]).toBeDefined()
+    expect(result["中书参议(方案顾问)"]).toBeDefined()
     expect(result["metis"]).toBeUndefined()
-    expect(result["Momus (Plan Critic)"]).toBeDefined()
+    expect(result["门下省(审议复核)"]).toBeDefined()
     expect(result["momus"]).toBeUndefined()
-    expect(result["Sisyphus-Junior"]).toBeDefined()
+    expect(result["六部执行官(分部执行)"]).toBeDefined()
     expect(result["sisyphus-junior"]).toBeUndefined()
   })
 })

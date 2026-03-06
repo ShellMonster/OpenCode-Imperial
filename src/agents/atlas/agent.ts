@@ -1,5 +1,5 @@
 /**
- * Atlas - Master Orchestrator Agent
+ * 尚书省(统筹执行) - Master Orchestrator Agent
  *
  * Orchestrates work via task() to complete ALL tasks in a todo list until fully done.
  * You are the conductor of a symphony of specialized agents.
@@ -101,7 +101,7 @@ function buildDynamicOrchestratorPrompt(ctx?: OrchestratorContext): string {
 export function createAtlasAgent(ctx: OrchestratorContext): AgentConfig {
   const baseConfig = {
     description:
-      "Orchestrates work via task() to complete ALL tasks in a todo list until fully done. (Atlas - OhMyOpenCode)",
+      "Orchestrates work via task() to complete ALL tasks in a todo list until fully done. (尚书省(统筹执行) - 三省六部)",
     mode: MODE,
     ...(ctx.model ? { model: ctx.model } : {}),
     temperature: 0.1,

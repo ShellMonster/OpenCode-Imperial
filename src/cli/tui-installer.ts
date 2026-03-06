@@ -1,6 +1,7 @@
 import * as p from "@clack/prompts"
 import color from "picocolors"
 import type { InstallArgs } from "./types"
+import { PLUGIN_PACKAGE_NAME } from "../shared/branding"
 import {
   addAuthPlugins,
   addPluginToOpenCodeConfig,
@@ -45,7 +46,7 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
   const config = await promptInstallConfig(detected)
   if (!config) return 1
 
-  spinner.start("Adding oh-my-opencode to OpenCode config")
+  spinner.start(`Adding ${PLUGIN_PACKAGE_NAME} to OpenCode config`)
   const pluginResult = await addPluginToOpenCodeConfig(version)
   if (!pluginResult.success) {
     spinner.stop(`Failed to add plugin: ${pluginResult.error}`)
@@ -74,7 +75,7 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
     spinner.stop(`Provider config added to ${color.cyan(providerResult.configPath)}`)
   }
 
-  spinner.start("Writing oh-my-opencode configuration")
+  spinner.start(`Writing ${PLUGIN_PACKAGE_NAME} configuration`)
   const omoResult = writeOmoConfig(config)
   if (!omoResult.success) {
     spinner.stop(`Failed to write config: ${omoResult.error}`)
@@ -87,7 +88,7 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
     console.log()
     console.log(color.bgRed(color.white(color.bold(" CRITICAL WARNING "))))
     console.log()
-    console.log(color.red(color.bold("  Sisyphus agent is STRONGLY optimized for Claude Opus 4.5.")))
+    console.log(color.red(color.bold("  太子(总管执行) agent is STRONGLY optimized for Claude Opus 4.5.")))
     console.log(color.red("  Without Claude, you may experience significantly degraded performance:"))
     console.log(color.dim("    • Reduced orchestration quality"))
     console.log(color.dim("    • Weaker tool selection and delegation"))

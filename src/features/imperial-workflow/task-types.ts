@@ -36,6 +36,8 @@ export type ImperialDispatchAssignment = {
   ministryRole: string
   assignedAt: string
   returnedAt?: string
+  returnedBy?: string
+  returnNote?: string
   status: "assigned" | "returned"
 }
 
@@ -44,6 +46,16 @@ export type ImperialDispatchMeta = {
   consolidated: boolean
   consolidatedAt?: string
   consolidatedBy?: string
+  consolidatedNote?: string
+}
+
+export type ImperialReviewMeta = {
+  pending: boolean
+  requestedAt?: string
+  requestedBy?: string
+  approvedAt?: string
+  approvedBy?: string
+  note?: string
 }
 
 export type ImperialTaskRecord = {
@@ -57,6 +69,7 @@ export type ImperialTaskRecord = {
   progressLog: ImperialProgressLogEntry[]
   scheduler: ImperialSchedulerMeta
   control?: ImperialTaskControl
+  review?: ImperialReviewMeta
   dispatch?: ImperialDispatchMeta
   createdAt: string
   updatedAt: string

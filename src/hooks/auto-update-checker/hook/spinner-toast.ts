@@ -1,4 +1,5 @@
 import type { PluginInput } from "@opencode-ai/plugin"
+import { PLUGIN_DISPLAY_NAME } from "../../../shared/branding"
 
 const SISYPHUS_SPINNER = ["·", "•", "●", "○", "◌", "◦", " "]
 
@@ -12,7 +13,7 @@ export async function showSpinnerToast(ctx: PluginInput, version: string, messag
     await ctx.client.tui
       .showToast({
         body: {
-          title: `${spinner} OhMyOpenCode ${version}`,
+          title: `${spinner} ${PLUGIN_DISPLAY_NAME} ${version}`,
           message,
           variant: "info" as const,
           duration: frameInterval + 50,

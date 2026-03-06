@@ -1,5 +1,3 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
-import { dirname, join } from "node:path"
 import type { ImperialTaskState } from "./state-machine"
 import { canTransition, nextStateFromDelegation } from "./state-machine"
 import type { ImperialRole } from "../../config/schema/imperial-workflow"
@@ -7,19 +5,21 @@ import { log } from "../../shared/logger"
 import { generateImperialTaskID } from "./task-id"
 import type { ImperialTaskRecord } from "./task-types"
 import { evaluateTaskScheduler } from "./scheduler"
-
-type TaskStateFile = {
-  tasks: Record<string, ImperialTaskRecord>
-}
+import {
+  getImperialTaskFilePath,
+  mutateImperialTaskStateFile,
+  readImperialTaskStateFile,
+  type ImperialTaskStateFile,
+} from "./task-state-file"
 
 const MINISTRY_ROLES: ImperialRole[] = ["hubu", "libu", "bingbu", "xingbu", "gongbu", "libu_hr"]
 
 export class ImperialTaskStateStore {
   private readonly filePath: string
-  private data: TaskStateFile = { tasks: {} }
+  private data: ImperialTaskStateFile = { tasks: {} }
 
   constructor(directory: string) {
-    this.filePath = join(directory, ".sisyphus", "imperial-workflow", "tasks.json")
+    this.filePath = getImperialTaskFilePath(directory)
     this.load()
   }
 
@@ -31,90 +31,101 @@ export class ImperialTaskStateStore {
   }
 
   ensureTask(sessionID: string, title: string, schedulerConfig?: { stallThresholdSec?: number; maxRetry?: number }): ImperialTaskRecord {
-    const existing = this.get(sessionID)
-    if (existing) return existing
+    return this.mutate((state) => {
+      const existing = state.tasks[sessionID]
+      if (existing) {
+        normalizeTaskRecord(existing)
+        return existing
+      }
 
-    const now = new Date().toISOString()
-    const created: ImperialTaskRecord = {
-      id: generateImperialTaskID(),
-      sessionID,
-      title,
-      state: "Pending",
-      org: "太子",
-      reviewRound: 0,
-      flowLog: [],
-      progressLog: [],
-      scheduler: {
-        enabled: true,
-        stallThresholdSec: schedulerConfig?.stallThresholdSec ?? 180,
-        maxRetry: schedulerConfig?.maxRetry ?? 1,
-        retryCount: 0,
-        escalationLevel: 0,
-        lastProgressAt: now,
-        stallSince: null,
-        lastDispatchStatus: "queued",
-      },
-      control: {
-        status: "active",
-        previousStatus: null,
-        reason: null,
+      const now = new Date().toISOString()
+      const created: ImperialTaskRecord = {
+        id: generateImperialTaskID(),
+        sessionID,
+        title,
+        state: "Pending",
+        org: "太子",
+        reviewRound: 0,
+        flowLog: [],
+        progressLog: [],
+        scheduler: {
+          enabled: true,
+          stallThresholdSec: schedulerConfig?.stallThresholdSec ?? 180,
+          maxRetry: schedulerConfig?.maxRetry ?? 1,
+          retryCount: 0,
+          escalationLevel: 0,
+          lastProgressAt: now,
+          stallSince: null,
+          lastDispatchStatus: "queued",
+        },
+        control: {
+          status: "active",
+          previousStatus: null,
+          reason: null,
+          updatedAt: now,
+        },
+        dispatch: {
+          assignments: [],
+          consolidated: false,
+        },
+        createdAt: now,
         updatedAt: now,
-      },
-      dispatch: {
-        assignments: [],
-        consolidated: false,
-      },
-      createdAt: now,
-      updatedAt: now,
-    }
-    this.data.tasks[sessionID] = created
-    this.persist()
-    return created
+      }
+      state.tasks[sessionID] = created
+      return created
+    })
   }
 
   appendFlow(sessionID: string, from: string, to: string, remark: string): void {
-    const task = this.get(sessionID)
-    if (!task) return
-    task.flowLog.push({
-      at: new Date().toISOString(),
-      from,
-      to,
-      remark,
+    this.mutate((state) => {
+      const task = state.tasks[sessionID]
+      if (!task) return
+      normalizeTaskRecord(task)
+      task.flowLog.push({
+        at: new Date().toISOString(),
+        from,
+        to,
+        remark,
+      })
+      task.updatedAt = new Date().toISOString()
     })
-    task.updatedAt = new Date().toISOString()
-    this.persist()
   }
 
   appendProgress(sessionID: string, agent: string, text: string): void {
-    const task = this.get(sessionID)
-    if (!task) return
-    const now = new Date().toISOString()
-    task.progressLog.push({
-      at: now,
-      agent,
-      text,
-      state: task.state,
+    this.mutate((state) => {
+      const task = state.tasks[sessionID]
+      if (!task) return
+      normalizeTaskRecord(task)
+      const now = new Date().toISOString()
+      task.progressLog.push({
+        at: now,
+        agent,
+        text,
+        state: task.state,
+      })
+      task.scheduler.lastProgressAt = now
+      task.scheduler.stallSince = null
+      task.updatedAt = now
     })
-    task.scheduler.lastProgressAt = now
-    task.scheduler.stallSince = null
-    task.updatedAt = now
-    this.persist()
   }
 
   setState(sessionID: string, state: ImperialTaskState, org: string): void {
-    const task = this.get(sessionID)
-    if (!task) return
-    const now = new Date().toISOString()
-    task.state = state
-    task.org = org
-    task.updatedAt = now
-    task.scheduler.lastProgressAt = now
-    this.persist()
+    this.mutate((file) => {
+      const task = file.tasks[sessionID]
+      if (!task) return
+      normalizeTaskRecord(task)
+      const now = new Date().toISOString()
+      task.state = state
+      task.org = org
+      task.updatedAt = now
+      task.scheduler.lastProgressAt = now
+    })
   }
 
   clear(sessionID: string): void {
-    delete this.data.tasks[sessionID]
-    this.persist()
+    this.mutate((state) => {
+      delete state.tasks[sessionID]
+    })
   }
 
   advanceFromDelegation(input: {
@@ -123,74 +134,95 @@ export class ImperialTaskStateStore {
     targetRole: ImperialRole
     callerAgent?: string
     targetAgent?: string
+    note?: string
   }): void {
     const next = nextStateFromDelegation(input.callerRole, input.targetRole)
     if (!next) return
 
-    const task = this.get(input.sessionID)
-    if (!task) return
-    normalizeTaskRecord(task)
+    this.mutate((state) => {
+      const task = state.tasks[input.sessionID]
+      if (!task) return
+      normalizeTaskRecord(task)
 
-    const now = new Date().toISOString()
-    this.updateDispatchMeta(task, input.callerRole, input.targetRole, now, input.callerAgent)
+      const now = new Date().toISOString()
+      const note = input.note?.trim()
+      this.updateDispatchMeta(task, input.callerRole, input.targetRole, now, input.callerAgent, note)
 
-    if (input.callerRole === "shangshu" && input.targetRole === "zhongshu") {
-      const returnedCount = task.dispatch!.assignments.filter((assignment) => assignment.status === "returned").length
-      if (returnedCount === 0) {
-        this.appendFlow(input.sessionID, "尚书省", "中书省", "dispatch closure blocked: no returned ministry receipt")
+      if (input.callerRole === "shangshu" && input.targetRole === "zhongshu") {
+        const returnedCount = task.dispatch!.assignments.filter((assignment) => assignment.status === "returned").length
+        if (returnedCount === 0) {
+          task.flowLog.push({
+            at: now,
+            from: "尚书省",
+            to: "中书省",
+            remark: "dispatch closure blocked: no returned ministry receipt",
+          })
+          task.updatedAt = now
+          return
+        }
+        task.dispatch!.consolidated = true
+        task.dispatch!.consolidatedAt = now
+        task.dispatch!.consolidatedBy = input.callerAgent ?? "shangshu"
+        task.dispatch!.consolidatedNote = note
+      }
+
+      const current = task.state
+      if (!canTransition(current, next)) {
+        log("[imperial-workflow] invalid state transition ignored", {
+          sessionID: input.sessionID,
+          from: current,
+          to: next,
+        })
         return
       }
-      task.dispatch!.consolidated = true
-      task.dispatch!.consolidatedAt = now
-      task.dispatch!.consolidatedBy = input.callerAgent ?? "shangshu"
-    }
 
-    const current = task.state
-    if (!canTransition(current, next)) {
-      log("[imperial-workflow] invalid state transition ignored", {
-        sessionID: input.sessionID,
-        from: current,
-        to: next,
+      task.state = next
+      task.org = roleToOrg(next, input.targetRole)
+      if (input.callerRole === "zhongshu" && input.targetRole === "menxia") {
+        task.reviewRound += 1
+        task.review!.pending = true
+        task.review!.requestedAt = now
+        task.review!.requestedBy = input.callerAgent ?? input.callerRole
+      }
+      if (input.callerRole === "menxia" && input.targetRole === "zhongshu") {
+        task.review!.pending = false
+        task.review!.approvedAt = now
+        task.review!.approvedBy = input.callerAgent ?? input.callerRole
+        if (note) task.review!.note = note
+      }
+      task.scheduler.lastDispatchStatus = "success"
+      task.scheduler.lastProgressAt = now
+      task.updatedAt = now
+      task.flowLog.push({
+        at: now,
+        from: input.callerAgent ?? input.callerRole,
+        to: input.targetAgent ?? input.targetRole,
+        remark: `${input.callerRole} -> ${input.targetRole}`,
       })
-      return
-    }
-
-    task.state = next
-    task.org = roleToOrg(next, input.targetRole)
-    if (input.callerRole === "zhongshu" && input.targetRole === "menxia") {
-      task.reviewRound += 1
-    }
-    task.scheduler.lastDispatchStatus = "success"
-    task.scheduler.lastProgressAt = now
-    task.updatedAt = now
-    this.appendFlow(
-      input.sessionID,
-      input.callerAgent ?? input.callerRole,
-      input.targetAgent ?? input.targetRole,
-      `${input.callerRole} -> ${input.targetRole}`,
-    )
-    this.persist()
+    })
   }
 
   runSchedulerCheck(sessionID: string, now = new Date()): { type: "none" | "retry" | "escalate"; remark?: string } {
-    const task = this.get(sessionID)
-    if (!task) return { type: "none" }
-    const decision = evaluateTaskScheduler(task, now)
-    if (decision.type === "none") return decision
+    return this.mutate((state) => {
+      const task = state.tasks[sessionID]
+      if (!task) return { type: "none" as const }
+      normalizeTaskRecord(task)
+      const decision = evaluateTaskScheduler(task, now)
+      if (decision.type === "none") return decision
 
-    if (decision.type === "retry") {
-      task.scheduler.retryCount += 1
-      task.scheduler.lastDispatchStatus = "timeout"
-      task.scheduler.stallSince = now.toISOString()
-    } else {
-      task.scheduler.escalationLevel += 1
-      task.scheduler.lastDispatchStatus = "failed"
-      task.scheduler.stallSince = now.toISOString()
-    }
-    task.updatedAt = now.toISOString()
-    this.appendFlow(sessionID, "scheduler", "scheduler", decision.remark)
-    this.persist()
-    return decision
+      if (decision.type === "retry") {
+        task.scheduler.retryCount += 1
+        task.scheduler.lastDispatchStatus = "timeout"
+        task.scheduler.stallSince = now.toISOString()
+      } else {
+        task.scheduler.escalationLevel += 1
+        task.scheduler.lastDispatchStatus = "failed"
+        task.scheduler.stallSince = now.toISOString()
+      }
+      task.updatedAt = now.toISOString()
+      task.flowLog.push({ at: now.toISOString(), from: "scheduler", to: "scheduler", remark: decision.remark })
+      return decision
+    })
   }
 
   getActivity(sessionID: string): Array<{ at: string; kind: string; payload: unknown }> {
@@ -206,38 +238,40 @@ export class ImperialTaskStateStore {
   }
 
   private load(): void {
-    if (!existsSync(this.filePath)) return
-    try {
-      const parsed = JSON.parse(readFileSync(this.filePath, "utf8")) as TaskStateFile
-      if (parsed && typeof parsed === "object" && parsed.tasks) {
-        for (const task of Object.values(parsed.tasks)) {
-          normalizeTaskRecord(task)
-        }
-        this.data = parsed
-      }
-    } catch {
-      this.data = { tasks: {} }
+    this.data = readImperialTaskStateFile(this.filePath)
+    for (const task of Object.values(this.data.tasks)) {
+      normalizeTaskRecord(task)
     }
   }
 
-  private persist(): void {
+  private mutate<T>(mutator: (state: ImperialTaskStateFile) => T): T {
     try {
-      mkdirSync(dirname(this.filePath), { recursive: true })
-      writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), "utf8")
+      const { state, result } = mutateImperialTaskStateFile(this.filePath, (file) => {
+        for (const task of Object.values(file.tasks)) {
+          normalizeTaskRecord(task)
+        }
+        return mutator(file)
+      })
+      for (const task of Object.values(state.tasks)) {
+        normalizeTaskRecord(task)
+      }
+      this.data = state
+      return result
     } catch (error) {
       log("[imperial-workflow] task state persistence skipped", {
         filePath: this.filePath,
         error: error instanceof Error ? error.message : String(error),
       })
+      return mutator(this.data)
     }
   }
-
   private updateDispatchMeta(
     task: ImperialTaskRecord,
     callerRole: ImperialRole,
     targetRole: ImperialRole,
     nowIso: string,
     callerAgent?: string,
+    note?: string,
   ): void {
     const dispatch = task.dispatch!
     if (callerRole === "shangshu" && MINISTRY_ROLES.includes(targetRole)) {
@@ -246,6 +280,8 @@ export class ImperialTaskStateStore {
         existing.status = "assigned"
         existing.assignedAt = nowIso
         existing.returnedAt = undefined
+        existing.returnedBy = undefined
+        existing.returnNote = undefined
       } else {
         dispatch.assignments.push({
           ministryRole: targetRole,
@@ -261,17 +297,22 @@ export class ImperialTaskStateStore {
       if (existing) {
         existing.status = "returned"
         existing.returnedAt = nowIso
+        existing.returnedBy = callerAgent
+        if (note) existing.returnNote = note
       } else {
         dispatch.assignments.push({
           ministryRole: callerRole,
           status: "returned",
           assignedAt: nowIso,
           returnedAt: nowIso,
+          returnedBy: callerAgent,
+          ...(note ? { returnNote: note } : {}),
         })
       }
       dispatch.consolidated = false
       dispatch.consolidatedAt = undefined
       dispatch.consolidatedBy = callerAgent
+      dispatch.consolidatedNote = undefined
     }
   }
 }
@@ -289,6 +330,11 @@ function normalizeTaskRecord(task: ImperialTaskRecord): void {
     task.dispatch = {
       assignments: [],
       consolidated: false,
+    }
+  }
+  if (!task.review) {
+    task.review = {
+      pending: false,
     }
   }
 }

@@ -45,6 +45,20 @@
 
 <!-- </CENTERED SECTION FOR GITHUB DISPLAY> -->
 
+> [!IMPORTANT]
+> This repository is a **secondary development fork** based on [oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode), adapted around the OpenCode plugin and multi-agent runtime.
+>
+> The current imperial workflow and dashboard are **inspired by** [cft0808/edict](https://github.com/cft0808/edict), especially its "三省六部" governance framing.
+>
+> In practice, this project builds on top of **OpenCode's multi-agent orchestration** and the **oh-my-opencode** plugin foundation, then extends them into an imperial-style system with workflow governance, auditability, and dashboard operations.
+
+## Project Positioning
+
+- Upstream foundation: `oh-my-opencode`
+- Runtime base: `OpenCode` multi-agent orchestration
+- Design inspiration: `edict` "三省六部" architecture
+- Current direction: imperial workflow, agent governance, audit trail, and dashboard operations for OpenCode plugin workflows
+
 ## Reviews
 
 > "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community." - [Arthur Guiot](https://x.com/arthur_guiot/status/2008736347092382053?s=20)

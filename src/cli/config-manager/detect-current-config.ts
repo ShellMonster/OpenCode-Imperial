@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs"
-import { parseJsonc } from "../../shared"
+import { PLUGIN_PACKAGE_NAME, parseJsonc } from "../../shared"
 import type { DetectedConfig } from "../types"
-import { getOmoConfigPath } from "./config-context"
+import { getLegacyOmoConfigPath, getOmoConfigPath } from "./config-context"
 import { detectConfigFormat } from "./opencode-config-format"
 import { parseOpenCodeConfigFileWithError } from "./parse-opencode-config-file"
 
@@ -11,7 +11,7 @@ function detectProvidersFromOmoConfig(): {
   hasZaiCodingPlan: boolean
   hasKimiForCoding: boolean
 } {
-  const omoConfigPath = getOmoConfigPath()
+  const omoConfigPath = existsSync(getOmoConfigPath()) ? getOmoConfigPath() : getLegacyOmoConfigPath()
   if (!existsSync(omoConfigPath)) {
     return { hasOpenAI: true, hasOpencodeZen: true, hasZaiCodingPlan: false, hasKimiForCoding: false }
   }
@@ -60,7 +60,9 @@ export function detectCurrentConfig(): DetectedConfig {
 
   const openCodeConfig = parseResult.config
   const plugins = openCodeConfig.plugin ?? []
-  result.isInstalled = plugins.some((p) => p.startsWith("oh-my-opencode"))
+  result.isInstalled = plugins.some(
+    (plugin) => plugin === PLUGIN_PACKAGE_NAME || plugin.startsWith(`${PLUGIN_PACKAGE_NAME}@`)
+  )
 
   if (!result.isInstalled) {
     return result

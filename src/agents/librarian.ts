@@ -32,7 +32,7 @@ export function createLibrarianAgent(model: string): AgentConfig {
 
   return {
     description:
-      "Specialized codebase understanding agent for multi-repository analysis, searching remote codebases, retrieving official documentation, and finding implementation examples using GitHub CLI, Context7, and Web Search. MUST BE USED when users ask to look up code in remote repositories, explain library internals, or find usage examples in open source. (Librarian - OhMyOpenCode)",
+      "典籍署参议。负责多仓代码考据、远程仓库检索、官方文档查证与开源实现示例搜集。用户要求查远程仓库、解释库内部机制或寻找开源用例时必须调用。 (典籍署参议)",
     mode: MODE,
     model,
     temperature: 0.1,

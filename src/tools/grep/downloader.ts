@@ -8,6 +8,7 @@ import {
   ensureExecutable,
   extractTarGz as extractTarGzArchive,
 } from "../../shared/binary-downloader"
+import { PLUGIN_CACHE_DIR_NAME } from "../../shared/branding"
 
 export function findFileRecursive(dir: string, filename: string): string | null {
   try {
@@ -39,7 +40,7 @@ function getPlatformKey(): string {
 
 function getInstallDir(): string {
   const homeDir = process.env.HOME || process.env.USERPROFILE || "."
-  return join(homeDir, ".cache", "oh-my-opencode", "bin")
+  return join(homeDir, ".cache", PLUGIN_CACHE_DIR_NAME, "bin")
 }
 
 function getRgPath(): string {

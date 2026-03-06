@@ -282,6 +282,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
             targetRole: delegationDecision.targetRole,
             callerAgent: parentContext.agent,
             targetAgent: agentToUse,
+            note: args.description,
           })
           imperialTaskStateStore.appendProgress(
             parentContext.sessionID,

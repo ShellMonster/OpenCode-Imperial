@@ -1,6 +1,7 @@
 import pc from "picocolors"
 import type { OpencodeClient } from "./types"
 import { serializeError } from "./events"
+import { PLUGIN_PACKAGE_NAME } from "../../shared/branding"
 
 const SESSION_CREATE_MAX_RETRIES = 3
 const SESSION_CREATE_RETRY_DELAY_MS = 1000
@@ -26,7 +27,7 @@ export async function resolveSession(options: {
   for (let attempt = 1; attempt <= SESSION_CREATE_MAX_RETRIES; attempt++) {
     const res = await client.session.create({
       body: {
-        title: "oh-my-opencode run",
+        title: `${PLUGIN_PACKAGE_NAME} run`,
         // In CLI run mode there's no TUI to answer questions.
         permission: [
           { permission: "question", action: "deny" as const, pattern: "*" },

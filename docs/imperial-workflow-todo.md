@@ -58,3 +58,28 @@
 - [x] All related tests pass.
 - [x] Typecheck passes.
 - [x] Docs include minimal and full config examples.
+
+## Phase P2: Imperial Runtime Entry (In Progress)
+
+- [x] Rewrite `/start-work` command and runtime template into 三省六部 narrative.
+- [x] Replace old planner/executor wording in start-work hook user-facing output.
+- [ ] Keep internal compatibility names (`atlas`, `prometheus`, `sisyphus`) unchanged.
+- [x] Add/adjust tests for the updated runtime wording.
+
+## Phase P3: Institutional Loop Closure
+
+- [x] Audit Zhongshu -> Menxia -> Shangshu -> ministries -> Zhongshu return flow.
+- [x] Make review rejection / resubmission / consolidated return states explicit in task detail output.
+- [x] Verify dispatch receipts and scheduler escalations are readable in dashboard activity.
+
+## Phase P4: Dashboard Core Parity
+
+- [ ] Add stronger memorial-style summary for completed work.
+- [x] Expose review notes / dispatch receipts / return summaries in dashboard APIs.
+- [x] Improve task detail to make the imperial chain readable without cross-checking raw JSON.
+
+## Phase P5: Tail Cleanup
+
+- [ ] Sweep remaining user-facing old naming in docs/help output.
+- [ ] Rebuild generated artifacts after source wording stabilizes.
+- [ ] Run targeted regression + typecheck as final acceptance.

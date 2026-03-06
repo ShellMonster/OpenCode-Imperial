@@ -4,6 +4,7 @@ import { join } from "path"
 import { BUILTIN_SERVERS } from "./constants"
 import type { ResolvedServer } from "./types"
 import { getOpenCodeConfigDir } from "../../shared"
+import { LEGACY_PLUGIN_CONFIG_BASENAME, PLUGIN_CONFIG_BASENAME } from "../../shared/branding"
 import { parseJsonc, detectConfigFile } from "../../shared/jsonc-parser"
 
 interface LspEntry {
@@ -37,9 +38,13 @@ export function loadJsonFile<T>(path: string): T | null {
 export function getConfigPaths(): { project: string; user: string; opencode: string } {
   const cwd = process.cwd()
   const configDir = getOpenCodeConfigDir({ binary: "opencode" })
+  const projectConfig = detectConfigFile(join(cwd, ".opencode", PLUGIN_CONFIG_BASENAME))
+  const legacyProjectConfig = detectConfigFile(join(cwd, ".opencode", LEGACY_PLUGIN_CONFIG_BASENAME))
+  const userConfig = detectConfigFile(join(configDir, PLUGIN_CONFIG_BASENAME))
+  const legacyUserConfig = detectConfigFile(join(configDir, LEGACY_PLUGIN_CONFIG_BASENAME))
   return {
-    project: detectConfigFile(join(cwd, ".opencode", "oh-my-opencode")).path,
-    user: detectConfigFile(join(configDir, "oh-my-opencode")).path,
+    project: projectConfig.format !== "none" ? projectConfig.path : legacyProjectConfig.path,
+    user: userConfig.format !== "none" ? userConfig.path : legacyUserConfig.path,
     opencode: detectConfigFile(join(configDir, "opencode")).path,
   }
 }

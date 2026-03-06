@@ -13,6 +13,7 @@ import {
   getImperialTaskStateStore,
   recordImperialAudit,
 } from "../../features/imperial-workflow"
+import { PLUGIN_CONFIG_BASENAME } from "../../shared/branding"
 
 export function createCallOmoAgent(
   ctx: PluginInput,
@@ -95,6 +96,7 @@ export function createCallOmoAgent(
           targetRole: imperialDecision.targetRole,
           callerAgent: toolCtx.agent,
           targetAgent: normalizedAgent,
+          note: args.description,
         })
         taskStateStore.appendProgress(
           toolCtx.sessionID,
@@ -113,7 +115,7 @@ export function createCallOmoAgent(
 
       // Check if agent is disabled
       if (disabledAgents.some((disabled) => disabled.toLowerCase() === normalizedAgent)) {
-        return `Error: Agent "${normalizedAgent}" is disabled via disabled_agents configuration. Remove it from disabled_agents in your oh-my-opencode.json to use it.`
+        return `Error: Agent "${normalizedAgent}" is disabled via disabled_agents configuration. Remove it from disabled_agents in your ${PLUGIN_CONFIG_BASENAME}.json to use it.`
       }
 
       if (args.run_in_background) {

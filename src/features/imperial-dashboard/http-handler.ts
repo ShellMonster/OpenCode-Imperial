@@ -3,6 +3,8 @@ import { renderImperialDashboardPage } from "./page"
 import {
   buildImperialDashboardSnapshot,
   buildImperialMemorialSummary,
+  buildImperialOfficialDetail,
+  buildImperialSessionMonitor,
   buildImperialTaskDetail,
   type ImperialDashboardSnapshotQuery,
 } from "./snapshot"
@@ -48,6 +50,20 @@ export function createImperialDashboardFetchHandler(options: Options): (request:
 
     if (path === "/imperial-dashboard/api/memorials/summary") {
       return json(buildImperialMemorialSummary(directory))
+    }
+
+    if (path.startsWith("/imperial-dashboard/api/officials/")) {
+      const role = decodeURIComponent(path.slice("/imperial-dashboard/api/officials/".length))
+      const detail = buildImperialOfficialDetail(directory, role)
+      if (!detail) return json({ error: "official not found", role }, 404)
+      return json(detail)
+    }
+
+    if (path.startsWith("/imperial-dashboard/api/sessions/") && path.endsWith("/monitor")) {
+      const sessionID = decodeURIComponent(path.slice("/imperial-dashboard/api/sessions/".length, -"/monitor".length))
+      const monitor = buildImperialSessionMonitor(directory, sessionID)
+      if (!monitor) return json({ error: "session not found", sessionID }, 404)
+      return json(monitor)
     }
 
     if (path.startsWith("/imperial-dashboard/api/tasks/") && path.endsWith("/actions") && request.method === "POST") {
