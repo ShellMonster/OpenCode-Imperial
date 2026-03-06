@@ -4,10 +4,13 @@
 
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { getPlatformPackageCandidates, getBinaryPath } from "./platform.js";
 
 const require = createRequire(import.meta.url);
+const PACKAGE_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 
 /**
  * Detect libc family on Linux
@@ -71,7 +74,43 @@ function getSignalExitCode(signal) {
   return 128 + (signalCodeByName[signal] ?? 1);
 }
 
-function main() {
+export function resolveInstalledBinaries(packageCandidates, platform) {
+  return packageCandidates
+    .map((pkg) => {
+      try {
+        return { pkg, binPath: require.resolve(getBinaryPath(pkg, platform)) };
+      } catch {
+        return null;
+      }
+    })
+    .filter((entry) => entry !== null);
+}
+
+export function tryInstallPlatformPackage(pkg) {
+  if (process.env.OPENCODE_IMPERIAL_DISABLE_AUTO_INSTALL === "1") {
+    return false;
+  }
+
+  const installAttempts = [
+    { command: "npm", args: ["install", "--no-save", pkg] },
+    { command: "bun", args: ["add", "--no-save", pkg] },
+  ];
+
+  for (const attempt of installAttempts) {
+    const result = spawnSync(attempt.command, attempt.args, {
+      cwd: PACKAGE_ROOT,
+      stdio: "inherit",
+    });
+
+    if (!result.error && (result.status ?? 1) === 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function main() {
   const { platform, arch } = process;
   const libcFamily = getLibcFamily();
   const avx2Supported = supportsAvx2();
@@ -89,23 +128,25 @@ function main() {
     process.exit(1);
   }
 
-  const resolvedBinaries = packageCandidates
-    .map((pkg) => {
-      try {
-        return { pkg, binPath: require.resolve(getBinaryPath(pkg, platform)) };
-      } catch {
-        return null;
-      }
-    })
-    .filter((entry) => entry !== null);
+  let resolvedBinaries = resolveInstalledBinaries(packageCandidates, platform);
 
   if (resolvedBinaries.length === 0) {
+    const primaryPackage = packageCandidates[0];
     console.error(`\nopencode-imperial: Platform binary not installed.`);
-    console.error(`\nYour platform: ${platform}-${arch}${libcFamily === "musl" ? "-musl" : ""}`);
-    console.error(`Expected packages (in order): ${packageCandidates.join(", ")}`);
-    console.error(`\nTo fix, run:`);
-    console.error(`  npm install ${packageCandidates[0]}\n`);
-    process.exit(1);
+    console.error(`Attempting to install ${primaryPackage} automatically...\n`);
+
+    if (tryInstallPlatformPackage(primaryPackage)) {
+      resolvedBinaries = resolveInstalledBinaries(packageCandidates, platform);
+    }
+
+    if (resolvedBinaries.length === 0) {
+      console.error(`\nopencode-imperial: Automatic platform package install failed.`);
+      console.error(`\nYour platform: ${platform}-${arch}${libcFamily === "musl" ? "-musl" : ""}`);
+      console.error(`Expected packages (in order): ${packageCandidates.join(", ")}`);
+      console.error(`\nTo fix, run:`);
+      console.error(`  npm install ${primaryPackage}\n`);
+      process.exit(1);
+    }
   }
 
   for (let index = 0; index < resolvedBinaries.length; index += 1) {
@@ -139,4 +180,6 @@ function main() {
   process.exit(1);
 }
 
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}

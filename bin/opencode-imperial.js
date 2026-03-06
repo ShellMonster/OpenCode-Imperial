@@ -1,2 +1,4 @@
 #!/usr/bin/env node
-import "./opencode-imperial-wrapper.js"
+import { main } from "./opencode-imperial-wrapper.js"
+
+main()

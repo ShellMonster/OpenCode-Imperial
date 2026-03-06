@@ -1,6 +1,6 @@
 {
   "name": "opencode-imperial-darwin-x64-baseline",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Platform-specific binary for opencode-imperial (darwin-x64-baseline, no AVX2)",
   "license": "MIT",
   "repository": {
