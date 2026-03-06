@@ -137,6 +137,10 @@ graph LR
 - 中文化 Agent 展示名
 - 安装器、CLI、README、配置文档第一轮收口
 
+上面是控制台头图，下面这张是更具象的制度意向图：皇上或太子居上，中书省、门下省、尚书省与六部居下，强调的是层级、秩序与朝议感。
+
+![OpenCode Imperial Court Scene](./.github/assets/opencode-imperial-court-scene-cn.jpg)
+
 ## 三省六部映射
 
 当前 UI 展示名已经切到中文叙事，但内部兼容 key 仍保留旧名字，便于兼容上游配置和迁移。
