@@ -39,7 +39,7 @@ async function getContributors(previousTag: string): Promise<string[]> {
 
   try {
     const compare =
-      await $`gh api "/repos/ShellMonster/oh-my-opencode/compare/${previousTag}...HEAD" --jq '.commits[] | {login: .author.login, message: .commit.message}'`.text()
+      await $`gh api "/repos/ShellMonster/OpenCode-Imperial/compare/${previousTag}...HEAD" --jq '.commits[] | {login: .author.login, message: .commit.message}'`.text()
     const contributors = new Map<string, string[]>()
 
     for (const line of compare.split("\n").filter(Boolean)) {

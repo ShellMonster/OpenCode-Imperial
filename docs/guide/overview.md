@@ -16,7 +16,7 @@ Paste this into your LLM agent session:
 
 ```
 Install and configure opencode-imperial by following the instructions here:
-https://raw.githubusercontent.com/ShellMonster/oh-my-opencode/dev/docs/guide/installation.md
+https://raw.githubusercontent.com/ShellMonster/OpenCode-Imperial/dev/docs/guide/installation.md
 ```
 
 Or read the full [Installation Guide](./installation.md) for manual setup, provider authentication, and troubleshooting.
@@ -167,7 +167,7 @@ You can override specific agents or categories in your config:
 
 ```jsonc
 {
-  "$schema": "https://raw.githubusercontent.com/ShellMonster/oh-my-opencode/dev/assets/opencode-imperial.schema.json",
+  "$schema": "https://raw.githubusercontent.com/ShellMonster/OpenCode-Imperial/dev/assets/opencode-imperial.schema.json",
 
   "agents": {
     // Main orchestrator: Claude Opus or Kimi K2.5 work best

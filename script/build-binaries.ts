@@ -37,7 +37,7 @@ async function buildPlatform(platform: PlatformTarget): Promise<boolean> {
   console.log(`   Output: ${outfile}`);
 
   try {
-    await $`bun build --compile --minify --sourcemap --bytecode --target=${platform.target} ${ENTRY_POINT} --outfile=${outfile}`;
+    await $`bun build --compile --minify --bytecode --target=${platform.target} ${ENTRY_POINT} --outfile=${outfile}`;
 
     // Verify binary exists
     if (!existsSync(outfile)) {

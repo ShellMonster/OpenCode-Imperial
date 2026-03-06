@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import "./oh-my-opencode.js"
+import "./opencode-imperial-wrapper.js"

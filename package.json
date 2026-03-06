@@ -44,12 +44,12 @@
   "license": "SUL-1.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShellMonster/oh-my-opencode.git"
+    "url": "git+https://github.com/ShellMonster/OpenCode-Imperial.git"
   },
   "bugs": {
-    "url": "https://github.com/ShellMonster/oh-my-opencode/issues"
+    "url": "https://github.com/ShellMonster/OpenCode-Imperial/issues"
   },
-  "homepage": "https://github.com/ShellMonster/oh-my-opencode#readme",
+  "homepage": "https://github.com/ShellMonster/OpenCode-Imperial#readme",
   "dependencies": {
     "@ast-grep/cli": "^0.40.0",
     "@ast-grep/napi": "^0.40.0",

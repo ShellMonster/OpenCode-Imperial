@@ -171,7 +171,7 @@ See the [Orchestration System Guide](./orchestration.md) for how agents dispatch
 
 ```jsonc
 {
-  "$schema": "https://raw.githubusercontent.com/ShellMonster/oh-my-opencode/dev/assets/opencode-imperial.schema.json",
+  "$schema": "https://raw.githubusercontent.com/ShellMonster/OpenCode-Imperial/dev/assets/opencode-imperial.schema.json",
 
   "agents": {
     // Main orchestrator: Claude Opus or Kimi K2.5 work best

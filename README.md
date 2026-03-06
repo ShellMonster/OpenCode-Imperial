@@ -4,7 +4,7 @@
 
 把 OpenCode 的多 Agent 编排，改造成一套可审议、可派发、可回执、可审计的三省六部工作流。
 
-这是一个基于 [oh-my-opencode](https://github.com/ShellMonster/oh-my-opencode) fork 的二次开发项目，运行在 OpenCode 插件与多 Agent 运行时之上，并参考了 [cft0808/edict](https://github.com/cft0808/edict) 的“三省六部”制度化协作思路。
+这是一个基于 [oh-my-opencode](https://github.com/ShellMonster/OpenCode-Imperial) fork 的二次开发项目，运行在 OpenCode 插件与多 Agent 运行时之上，并参考了 [cft0808/edict](https://github.com/cft0808/edict) 的“三省六部”制度化协作思路。
 
 当前默认对外名称：
 

@@ -9,7 +9,7 @@ export function createOhMyOpenCodeJsonSchema(): Record<string, unknown> {
 
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: "https://raw.githubusercontent.com/ShellMonster/oh-my-opencode/dev/assets/opencode-imperial.schema.json",
+    $id: "https://raw.githubusercontent.com/ShellMonster/OpenCode-Imperial/dev/assets/opencode-imperial.schema.json",
     title: "OpenCode Imperial Configuration",
     description: "Configuration schema for opencode-imperial plugin",
     ...jsonSchema,

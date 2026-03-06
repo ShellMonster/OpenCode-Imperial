@@ -515,7 +515,7 @@ describe("generateModelConfig", () => {
 
       // #then should include correct schema URL
       expect(result.$schema).toBe(
-        "https://raw.githubusercontent.com/ShellMonster/oh-my-opencode/dev/assets/opencode-imperial.schema.json"
+        "https://raw.githubusercontent.com/ShellMonster/OpenCode-Imperial/dev/assets/opencode-imperial.schema.json"
       )
     })
   })
