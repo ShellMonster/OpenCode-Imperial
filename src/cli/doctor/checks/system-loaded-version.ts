@@ -83,6 +83,27 @@ export async function getLatestPluginVersion(currentVersion: string | null): Pro
   return getLatestVersion(channel)
 }
 
+function extractInstallTag(version: string | null): string {
+  if (!version) return "latest"
+
+  const startsWithDigit = /^\d/.test(version)
+  if (!startsWithDigit) {
+    return version
+  }
+
+  if (!version.includes("-")) {
+    return "latest"
+  }
+
+  const prereleasePart = version.split("-")[1]
+  if (!prereleasePart) {
+    return "latest"
+  }
+
+  const channelMatch = prereleasePart.match(/^(alpha|beta|rc|canary|next)/)
+  return channelMatch?.[1] ?? "latest"
+}
+
 export function getSuggestedInstallTag(currentVersion: string | null): string {
-  return extractChannel(currentVersion)
+  return extractInstallTag(currentVersion)
 }
