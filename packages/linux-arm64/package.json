@@ -1,6 +1,6 @@
 {
   "name": "opencode-imperial-linux-arm64",
-  "version": "3.10.0",
+  "version": "1.0.0",
   "description": "Platform-specific binary for opencode-imperial (linux-arm64)",
   "license": "MIT",
   "repository": {

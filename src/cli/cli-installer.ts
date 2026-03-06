@@ -145,11 +145,6 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     "The Magic Word",
   )
 
-  console.log(`${SYMBOLS.star} ${color.yellow("If you found this helpful, consider starring the repo!")}`)
-  console.log(
-    `  ${color.dim("gh api --silent --method PUT /user/starred/code-yeongyu/opencode-imperial >/dev/null 2>&1 || true")}`,
-  )
-  console.log()
   console.log(color.dim("oMoMoMoMo... Enjoy!"))
   console.log()
 

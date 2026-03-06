@@ -1,7 +1,7 @@
 {
   "name": "opencode-imperial",
-  "version": "3.10.0",
-  "description": "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
+  "version": "1.0.0",
+  "description": "Governance-oriented OpenCode plugin with a Three Departments and Six Ministries multi-agent workflow and dashboard",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -40,7 +40,7 @@
     "ai",
     "llm"
   ],
-  "author": "YeonGyu-Kim",
+  "author": "ShellMonster",
   "license": "SUL-1.0",
   "repository": {
     "type": "git",
@@ -75,17 +75,17 @@
     "typescript": "^5.7.3"
   },
   "optionalDependencies": {
-    "opencode-imperial-darwin-arm64": "3.10.0",
-    "opencode-imperial-darwin-x64": "3.10.0",
-    "opencode-imperial-darwin-x64-baseline": "3.10.0",
-    "opencode-imperial-linux-arm64": "3.10.0",
-    "opencode-imperial-linux-arm64-musl": "3.10.0",
-    "opencode-imperial-linux-x64": "3.10.0",
-    "opencode-imperial-linux-x64-baseline": "3.10.0",
-    "opencode-imperial-linux-x64-musl": "3.10.0",
-    "opencode-imperial-linux-x64-musl-baseline": "3.10.0",
-    "opencode-imperial-windows-x64": "3.10.0",
-    "opencode-imperial-windows-x64-baseline": "3.10.0"
+    "opencode-imperial-darwin-arm64": "1.0.0",
+    "opencode-imperial-darwin-x64": "1.0.0",
+    "opencode-imperial-darwin-x64-baseline": "1.0.0",
+    "opencode-imperial-linux-arm64": "1.0.0",
+    "opencode-imperial-linux-arm64-musl": "1.0.0",
+    "opencode-imperial-linux-x64": "1.0.0",
+    "opencode-imperial-linux-x64-baseline": "1.0.0",
+    "opencode-imperial-linux-x64-musl": "1.0.0",
+    "opencode-imperial-linux-x64-musl-baseline": "1.0.0",
+    "opencode-imperial-windows-x64": "1.0.0",
+    "opencode-imperial-windows-x64-baseline": "1.0.0"
   },
   "overrides": {
     "@opencode-ai/sdk": "^1.2.17"
