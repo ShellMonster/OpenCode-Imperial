@@ -24,6 +24,31 @@ describe("imperial narrative prompt style", () => {
     }
   })
 
+  test("prometheus prompts should enforce imperial honorific tone without product-manager framing", () => {
+    for (const prompt of [
+      PROMETHEUS_GPT_SYSTEM_PROMPT,
+      PROMETHEUS_GEMINI_SYSTEM_PROMPT,
+      PROMETHEUS_IDENTITY_CONSTRAINTS,
+    ]) {
+      expect(prompt).toContain("陛下")
+      expect(prompt).toContain("臣")
+      expect(prompt).toContain("Do NOT")
+      expect(prompt).toContain("产品经理")
+    }
+  })
+
+  test("prometheus prompts should preserve remonstration instead of blind obedience", () => {
+    expect(PROMETHEUS_GPT_SYSTEM_PROMPT).toContain("blind obedience")
+    expect(PROMETHEUS_GPT_SYSTEM_PROMPT).toContain("better alternative")
+
+    expect(PROMETHEUS_GEMINI_SYSTEM_PROMPT).toContain("risk")
+    expect(PROMETHEUS_GEMINI_SYSTEM_PROMPT).toContain("recommended path")
+
+    expect(PROMETHEUS_IDENTITY_CONSTRAINTS).toContain("independent judgment")
+    expect(PROMETHEUS_IDENTITY_CONSTRAINTS).toContain("remonstrate")
+    expect(PROMETHEUS_IDENTITY_CONSTRAINTS).toContain("替代之策")
+  })
+
   test("core executor prompts should avoid legacy identity phrasing", () => {
     const sisyphusPrompt = createSisyphusAgent(
       "anthropic/claude-opus-4-1",
