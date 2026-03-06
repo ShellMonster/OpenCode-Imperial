@@ -27,7 +27,7 @@ npx opencode-imperial
 
 ## install
 
-Interactive installation tool for initial Oh-My-OpenCode setup. Provides a TUI based on `@clack/prompts`.
+Interactive installation tool for initial OpenCode Imperial setup. Provides a TUI based on `@clack/prompts`.
 
 ### Usage
 
@@ -53,7 +53,7 @@ bunx opencode-imperial install
 
 ## doctor
 
-Diagnoses your environment to ensure Oh-My-OpenCode is functioning correctly. Performs 17+ health checks.
+Diagnoses your environment to ensure OpenCode Imperial is functioning correctly. Performs 17+ health checks.
 
 ### Usage
 
@@ -86,7 +86,7 @@ bunx opencode-imperial doctor
 opencode-imperial doctor
 
 ┌──────────────────────────────────────────────────┐
-│  Oh-My-OpenCode Doctor                           │
+│  OpenCode Imperial Doctor                        │
 └──────────────────────────────────────────────────┘
 
 Installation

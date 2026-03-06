@@ -1,6 +1,11 @@
 # Orchestration System Guide
 
-Oh My OpenCode's orchestration system transforms a simple AI agent into a coordinated development team through **separation of planning and execution**.
+OpenCode Imperial's orchestration system transforms a simple AI agent into a coordinated development team through **separation of planning and execution**.
+
+Compatibility note:
+
+- This guide still uses some upstream internal names such as `Prometheus`, `Atlas`, and `Sisyphus-Junior`.
+- In the current product narrative they correspond to `中书省(制策规划)`, `尚书省(统筹执行)`, and `六部执行官(分部执行)`.
 
 ---
 
@@ -10,7 +15,7 @@ Oh My OpenCode's orchestration system transforms a simple AI agent into a coordi
 |------------|----------|-------------|
 | **Simple** | Just prompt | Simple tasks, quick fixes, single-file changes |
 | **Complex + Lazy** | Type `ulw` or `ultrawork` | Complex tasks where explaining context is tedious. Agent figures it out. |
-| **Complex + Precise** | `@plan` → `/start-work` | Precise, multi-step work requiring true orchestration. Prometheus plans, Atlas executes. |
+| **Complex + Precise** | `@plan` → `/start-work` | Precise, multi-step work requiring true orchestration. 中书省规划，尚书省执行。 |
 
 **Decision Flow:**
 

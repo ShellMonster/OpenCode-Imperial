@@ -2,6 +2,12 @@
 
 Complete reference for `opencode-imperial.jsonc` configuration. This document covers every available option with examples.
 
+Compatibility note:
+
+- Product-facing naming follows the OpenCode Imperial / 三省六部 narrative.
+- Many configuration keys still use upstream-compatible internal identifiers such as `sisyphus`, `prometheus`, and `atlas`.
+- Those keys remain valid and are not an error.
+
 ---
 
 ## Table of Contents
@@ -15,8 +21,8 @@ Complete reference for `opencode-imperial.jsonc` configuration. This document co
   - [Model Resolution](#model-resolution)
 - [Task System](#task-system)
   - [Background Tasks](#background-tasks)
-  - [Sisyphus Agent](#sisyphus-agent)
-  - [Sisyphus Tasks](#sisyphus-tasks)
+  - [Taizi Agent (`sisyphus`)](#taizi-agent-sisyphus)
+  - [Imperial Tasks (Legacy `task_system`)](#imperial-tasks-legacy-task_system)
 - [Features](#features)
   - [Skills](#skills)
   - [Hooks](#hooks)
@@ -305,7 +311,7 @@ Control parallel agent execution and concurrency limits.
 
 Priority: `modelConcurrency` > `providerConcurrency` > `defaultConcurrency`
 
-### Sisyphus Agent
+### Taizi Agent (`sisyphus`)
 
 Configure the main orchestration system.
 
@@ -329,7 +335,7 @@ Configure the main orchestration system.
 
 Sisyphus agents can also be customized under `agents` using their names: `Sisyphus`, `OpenCode-Builder`, `Prometheus (Planner)`, `Metis (Plan Consultant)`.
 
-### Sisyphus Tasks
+### Imperial Tasks (Legacy `task_system`)
 
 Enable the Sisyphus Tasks system for cross-session task tracking.
 

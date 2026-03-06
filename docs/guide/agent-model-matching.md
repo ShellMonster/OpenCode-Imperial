@@ -2,13 +2,22 @@
 
 > **For agents and users**: Why each agent needs a specific model — and how to customize without breaking things.
 
+Compatibility note:
+
+- This guide explains model matching with internal agent keys and legacy upstream names.
+- In the current product narrative:
+  - `sisyphus` = `太子(总管执行)`
+  - `prometheus` = `中书省(制策规划)`
+  - `atlas` = `尚书省(统筹执行)`
+  - `sisyphus-junior` = `六部执行官(分部执行)`
+
 ## The Core Insight: Models Are Developers
 
 Think of AI models as developers on a team. Each has a different brain, different personality, different strengths. **A model isn't just "smarter" or "dumber." It thinks differently.** Give the same instruction to Claude and GPT, and they'll interpret it in fundamentally different ways.
 
 This isn't a bug. It's the foundation of the entire system.
 
-Oh My OpenCode assigns each agent a model that matches its *working style* — like building a team where each person is in the role that fits their personality.
+OpenCode Imperial assigns each agent a model that matches its *working style* — like building a team where each person is in the role that fits their personality.
 
 ### Sisyphus: The Sociable Lead
 

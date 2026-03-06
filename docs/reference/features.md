@@ -1,14 +1,22 @@
-# Oh-My-OpenCode Features Reference
+# OpenCode Imperial Features Reference
+
+This reference describes the current `opencode-imperial` feature set.
+
+Compatibility note:
+
+- External product name uses the Three Departments and Six Ministries narrative.
+- Internal agent/config keys still preserve many upstream identifiers such as `sisyphus`, `prometheus`, and `atlas`.
+- Where this document mentions legacy internal keys, treat them as compatibility-oriented implementation names.
 
 ## Agents
 
-Oh-My-OpenCode provides 11 specialized AI agents. Each has distinct expertise, optimized models, and tool permissions.
+OpenCode Imperial provides 11 specialized AI agents. Each has distinct expertise, optimized models, and tool permissions.
 
 ### Core Agents
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| **Sisyphus** | `claude-opus-4-6` | The default orchestrator. Plans, delegates, and executes complex tasks using specialized subagents with aggressive parallel execution. Todo-driven workflow with extended thinking (32k budget). Fallback: gpt-5.3-codex → deep quality chain. |
+| **太子(总管执行)** (`sisyphus`) | `claude-opus-4-6` | The default orchestrator. Plans, delegates, and executes complex tasks using specialized subagents with aggressive parallel execution. Todo-driven workflow with extended thinking (32k budget). Fallback: gpt-5.3-codex → deep quality chain. |
 | **Hephaestus** | `gpt-5.3-codex` | The Legitimate Craftsman. Autonomous deep worker inspired by AmpCode's deep mode. Goal-oriented execution with thorough research before action. Explores codebase patterns, completes tasks end-to-end without premature stopping. Named after the Greek god of forge and craftsmanship. Fallback: deep quality chain (claude-opus-4-6-thinking → step-3.5-flash → glm-5 → ...). Requires at least one model in the chain to be available. |
 | **Oracle** | `gpt-5.3-codex` | Architecture decisions, code review, debugging. Read-only consultation with stellar logical reasoning and deep analysis. Inspired by AmpCode. Fallback: claude-opus-4-6-thinking → claude-sonnet-4-5-thinking → deep quality chain. |
 | **Librarian** | `claude-sonnet-4-5` | Multi-repo analysis, documentation lookup, OSS implementation examples. Deep codebase understanding with evidence-based answers. Fallback: speed chain (claude-haiku-4-5 → gpt-5-mini → ...) → quality chain. |
@@ -19,16 +27,16 @@ Oh-My-OpenCode provides 11 specialized AI agents. Each has distinct expertise, o
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| **Prometheus** | `claude-opus-4-6-thinking` | Strategic planner with interview mode. Creates detailed work plans through iterative questioning. Fallback: gpt-5.3-codex → claude-sonnet-4-5-thinking → deep quality chain. |
-| **Metis** | `claude-opus-4-6-thinking` | Plan consultant — pre-planning analysis. Identifies hidden intentions, ambiguities, and AI failure points. Fallback: gpt-5.3-codex → claude-sonnet-4-5-thinking → deep quality chain. |
-| **Momus** | `gpt-5.3-codex` | Plan reviewer — validates plans against clarity, verifiability, and completeness standards. Fallback: claude-opus-4-6-thinking → deep quality chain. |
+| **中书省(制策规划)** (`prometheus`) | `claude-opus-4-6-thinking` | Strategic planner with interview mode. Creates detailed work plans through iterative questioning. Fallback: gpt-5.3-codex → claude-sonnet-4-5-thinking → deep quality chain. |
+| **中书参议(方案顾问)** (`metis`) | `claude-opus-4-6-thinking` | Plan consultant — pre-planning analysis. Identifies hidden intentions, ambiguities, and AI failure points. Fallback: gpt-5.3-codex → claude-sonnet-4-5-thinking → deep quality chain. |
+| **门下省(审议复核)** (`momus`) | `gpt-5.3-codex` | Plan reviewer — validates plans against clarity, verifiability, and completeness standards. Fallback: claude-opus-4-6-thinking → deep quality chain. |
 
 ### Orchestration Agents
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| **Atlas** | `claude-sonnet-4-5-thinking` | Todo-list orchestrator. Executes planned tasks systematically, managing todo items and coordinating work. Fallback: claude-opus-4-6-thinking → gpt-5.3-codex → deep quality chain. |
-| **Sisyphus-Junior** | *(category-dependent)* | Category-spawned executor. Model is selected automatically based on the task category (visual-engineering, quick, deep, etc.). Used when the main agent delegates work via the `task` tool. |
+| **尚书省(统筹执行)** (`atlas`) | `claude-sonnet-4-5-thinking` | Todo-list orchestrator. Executes planned tasks systematically, managing todo items and coordinating work. Fallback: claude-opus-4-6-thinking → gpt-5.3-codex → deep quality chain. |
+| **六部执行官(分部执行)** (`sisyphus-junior`) | *(category-dependent)* | Category-spawned executor. Model is selected automatically based on the task category (visual-engineering, quick, deep, etc.). Used when the main agent delegates work via the `task` tool. |
 
 ### Invoking Agents
 
@@ -230,7 +238,7 @@ Skills provide specialized workflows with embedded MCP servers and detailed inst
 
 ### Browser Automation Options
 
-Oh-My-OpenCode provides two browser automation providers, configurable via `browser_automation_engine.provider`.
+OpenCode Imperial provides two browser automation providers, configurable via `browser_automation_engine.provider`.
 
 #### Option 1: Playwright MCP (Default)
 
@@ -536,7 +544,7 @@ Requires `experimental.task_system: true` in config.
 
 #### Task System Details
 
-**Note on Claude Code Alignment**: This implementation follows Claude Code's internal Task tool signatures (`TaskCreate`, `TaskUpdate`, `TaskList`, `TaskGet`) and field naming conventions (`subject`, `blockedBy`, `blocks`, etc.). However, Anthropic has not published official documentation for these tools. This is Oh My OpenCode's own implementation based on observed Claude Code behavior and internal specifications.
+**Note on Claude Code Alignment**: This implementation follows Claude Code's internal Task tool signatures (`TaskCreate`, `TaskUpdate`, `TaskList`, `TaskGet`) and field naming conventions (`subject`, `blockedBy`, `blocks`, etc.). However, Anthropic has not published official documentation for these tools. This is OpenCode Imperial's own implementation based on observed Claude Code behavior and internal specifications.
 
 **Task Schema**:
 ```ts
