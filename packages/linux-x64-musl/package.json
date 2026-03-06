@@ -1,11 +1,11 @@
 {
-  "name": "oh-my-opencode-linux-x64-musl",
+  "name": "opencode-imperial-linux-x64-musl",
   "version": "3.10.0",
-  "description": "Platform-specific binary for oh-my-opencode (linux-x64-musl)",
+  "description": "Platform-specific binary for opencode-imperial (linux-x64-musl)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/code-yeongyu/oh-my-opencode"
+    "url": "https://github.com/ShellMonster/oh-my-opencode"
   },
   "os": [
     "linux"
@@ -20,6 +20,6 @@
     "bin"
   ],
   "bin": {
-    "oh-my-opencode": "./bin/oh-my-opencode"
+    "opencode-imperial": "./bin/opencode-imperial"
   }
 }

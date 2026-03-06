@@ -277,7 +277,7 @@ describe("generateOmoConfig - model fallback system", () => {
     const result = generateOmoConfig(config)
 
     // #then Sisyphus is omitted (requires all fallback providers)
-    expect(result.$schema).toBe("https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/opencode-imperial.schema.json")
+    expect(result.$schema).toBe("https://raw.githubusercontent.com/ShellMonster/oh-my-opencode/dev/assets/opencode-imperial.schema.json")
     expect((result.agents as Record<string, { model: string }>).sisyphus).toBeUndefined()
   })
 
