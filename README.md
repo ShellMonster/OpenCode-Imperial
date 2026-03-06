@@ -1,6 +1,6 @@
 # OpenCode Imperial
 
-![OpenCode Imperial Hero](./.github/assets/opencode-imperial-hero.jpg)
+![OpenCode Imperial Hero](./.github/assets/opencode-imperial-hero-cn.jpg)
 
 把 OpenCode 的多 Agent 编排，改造成一套可审议、可派发、可回执、可审计的三省六部工作流。
 
@@ -136,8 +136,6 @@ graph LR
 - npm 包、CLI 命令、schema 主路径切换到 `opencode-imperial`
 - 中文化 Agent 展示名
 - 安装器、CLI、README、配置文档第一轮收口
-
-![OpenCode Imperial Workflow Concept](./.github/assets/opencode-imperial-workflow-concept.jpg)
 
 ## 三省六部映射
 
