@@ -204,7 +204,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 2
+      max-parallel: 1
       matrix:
         platform: [darwin-arm64, darwin-x64, darwin-x64-baseline, linux-x64, linux-x64-baseline, linux-arm64, linux-x64-musl, linux-x64-musl-baseline, linux-arm64-musl, windows-x64, windows-x64-baseline]
     steps:
@@ -255,16 +255,21 @@ jobs:
 
       - name: Publish ${{ matrix.platform }}
         if: steps.check.outputs.skip != 'true' && steps.download.outcome == 'success'
-        run: |
-          cd packages/${{ matrix.platform }}
-          
-          TAG_ARG=""
-          if [ -n "${{ inputs.dist_tag }}" ]; then
-            TAG_ARG="--tag ${{ inputs.dist_tag }}"
-          fi
-          
-          npm publish --access public --provenance $TAG_ARG
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 4
+          retry_wait_seconds: 90
+          shell: bash
+          command: |
+            cd packages/${{ matrix.platform }}
+
+            TAG_ARG=""
+            if [ -n "${{ inputs.dist_tag }}" ]; then
+              TAG_ARG="--tag ${{ inputs.dist_tag }}"
+            fi
+
+            npm publish --access public --provenance $TAG_ARG
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
-        timeout-minutes: 15
