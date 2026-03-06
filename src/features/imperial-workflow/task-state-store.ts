@@ -16,12 +16,14 @@ import {
 const MINISTRY_ROLES: ImperialRole[] = ["hubu", "libu", "bingbu", "xingbu", "gongbu", "libu_hr"]
 
 export class ImperialTaskStateStore {
-  private readonly filePath: string
+  private readonly filePath?: string
   private data: ImperialTaskStateFile = { tasks: {} }
 
-  constructor(directory: string) {
-    this.filePath = getImperialTaskFilePath(directory)
-    this.load(getPreferredImperialTaskReadPath(directory))
+  constructor(directory?: string) {
+    if (directory) {
+      this.filePath = getImperialTaskFilePath(directory)
+      this.load(getPreferredImperialTaskReadPath(directory))
+    }
   }
 
   get(sessionID: string): ImperialTaskRecord | undefined {
@@ -239,6 +241,10 @@ export class ImperialTaskStateStore {
   }
 
   private load(readPath = this.filePath): void {
+    if (!readPath) {
+      this.data = { tasks: {} }
+      return
+    }
     this.data = readImperialTaskStateFile(readPath)
     for (const task of Object.values(this.data.tasks)) {
       normalizeTaskRecord(task)
@@ -246,6 +252,17 @@ export class ImperialTaskStateStore {
   }
 
   private mutate<T>(mutator: (state: ImperialTaskStateFile) => T): T {
+    if (!this.filePath) {
+      for (const task of Object.values(this.data.tasks)) {
+        normalizeTaskRecord(task)
+      }
+      const result = mutator(this.data)
+      for (const task of Object.values(this.data.tasks)) {
+        normalizeTaskRecord(task)
+      }
+      return result
+    }
+
     try {
       const { state, result } = mutateImperialTaskStateFile(this.filePath, (file) => {
         for (const task of Object.values(file.tasks)) {
@@ -361,7 +378,10 @@ function roleToOrg(state: ImperialTaskState, targetRole: ImperialRole): string {
 
 const stores = new Map<string, ImperialTaskStateStore>()
 
-export function getImperialTaskStateStore(directory: string): ImperialTaskStateStore {
+export function getImperialTaskStateStore(directory?: string): ImperialTaskStateStore {
+  if (!directory) {
+    return new ImperialTaskStateStore()
+  }
   const existing = stores.get(directory)
   if (existing) return existing
   const created = new ImperialTaskStateStore(directory)
