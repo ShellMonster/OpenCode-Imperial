@@ -50,6 +50,7 @@ describe("runCliInstaller", () => {
       spyOn(configManager, "addPluginToOpenCodeConfig").mockResolvedValue({
         success: true,
         configPath: "/tmp/opencode.jsonc",
+        warnings: ["coexistence warning"],
       }),
       spyOn(configManager, "writeOmoConfig").mockReturnValue({
         success: true,
@@ -75,6 +76,7 @@ describe("runCliInstaller", () => {
     expect(result).toBe(0)
     expect(addAuthPluginsSpy).toHaveBeenCalledTimes(1)
     expect(addProviderConfigSpy).toHaveBeenCalledTimes(1)
+    expect(mockConsoleLog).toHaveBeenCalled()
 
     for (const spy of restoreSpies) {
       spy.mockRestore()

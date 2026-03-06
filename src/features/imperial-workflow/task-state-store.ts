@@ -7,6 +7,7 @@ import type { ImperialTaskRecord } from "./task-types"
 import { evaluateTaskScheduler } from "./scheduler"
 import {
   getImperialTaskFilePath,
+  getPreferredImperialTaskReadPath,
   mutateImperialTaskStateFile,
   readImperialTaskStateFile,
   type ImperialTaskStateFile,
@@ -20,7 +21,7 @@ export class ImperialTaskStateStore {
 
   constructor(directory: string) {
     this.filePath = getImperialTaskFilePath(directory)
-    this.load()
+    this.load(getPreferredImperialTaskReadPath(directory))
   }
 
   get(sessionID: string): ImperialTaskRecord | undefined {
@@ -237,8 +238,8 @@ export class ImperialTaskStateStore {
     return [...flow, ...progress].sort((a, b) => a.at.localeCompare(b.at))
   }
 
-  private load(): void {
-    this.data = readImperialTaskStateFile(this.filePath)
+  private load(readPath = this.filePath): void {
+    this.data = readImperialTaskStateFile(readPath)
     for (const task of Object.values(this.data.tasks)) {
       normalizeTaskRecord(task)
     }

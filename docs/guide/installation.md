@@ -23,6 +23,12 @@ npx opencode-imperial install # alternative
 
 Follow the prompts to configure your Claude, ChatGPT, and Gemini subscriptions. After installation, authenticate your providers as instructed.
 
+Coexistence note:
+
+- `oh-my-opencode` and `opencode-imperial` can be installed on the same machine.
+- Recommended usage is one plugin per project workspace.
+- `opencode-imperial` keeps workflow runtime data under `.opencode-imperial/imperial-workflow/`.
+
 After you install it, you can read this [overview guide](./overview.md) to understand more.
 
 ## For LLM Agents

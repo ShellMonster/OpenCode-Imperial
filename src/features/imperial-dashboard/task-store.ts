@@ -1,6 +1,7 @@
 import type { ImperialTaskRecord } from "../imperial-workflow/task-types"
 import {
   getImperialTaskFilePath,
+  getPreferredImperialTaskReadPath,
   mutateImperialTaskStateFile,
   readImperialTaskStateFile,
   writeImperialTaskStateFile,
@@ -16,7 +17,7 @@ export type TaskActionResult = {
 }
 
 export function loadTasks(directory: string): ImperialTaskRecord[] {
-  const data = readImperialTaskStateFile(getImperialTaskFilePath(directory))
+  const data = readImperialTaskStateFile(getPreferredImperialTaskReadPath(directory))
   return Object.values(data.tasks).map((task) => normalizeTask(task))
 }
 

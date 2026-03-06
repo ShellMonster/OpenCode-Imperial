@@ -54,6 +54,9 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
     return 1
   }
   spinner.stop(`Plugin added to ${color.cyan(pluginResult.configPath)}`)
+  for (const warning of pluginResult.warnings ?? []) {
+    p.log.warn(warning)
+  }
 
   if (config.hasGemini) {
     spinner.start("Adding auth plugins (fetching latest versions)")

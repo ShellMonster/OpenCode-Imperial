@@ -88,8 +88,13 @@ When `auth_token` is configured:
 
 ## Data Sources
 
-- `.sisyphus/imperial-workflow/tasks.json`
-- `.sisyphus/imperial-workflow/audit.jsonl`
+- `.opencode-imperial/imperial-workflow/tasks.json`
+- `.opencode-imperial/imperial-workflow/audit.jsonl`
+
+Legacy compatibility:
+
+- If only legacy `.sisyphus/imperial-workflow/*` exists, dashboard reads it as a fallback.
+- New runtime writes use `.opencode-imperial/imperial-workflow/*`.
 
 ## Notes
 

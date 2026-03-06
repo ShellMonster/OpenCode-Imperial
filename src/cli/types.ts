@@ -28,6 +28,7 @@ export interface ConfigMergeResult {
   success: boolean
   configPath: string
   error?: string
+  warnings?: string[]
 }
 
 export interface DetectedConfig {

@@ -77,6 +77,9 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
   printSuccess(
     `Plugin ${isUpdate ? "verified" : "added"} ${SYMBOLS.arrow} ${color.dim(pluginResult.configPath)}`,
   )
+  for (const warning of pluginResult.warnings ?? []) {
+    printWarning(warning)
+  }
 
   const needsProviderSetup = config.hasGemini || config.hasOpenAI || config.hasCopilot
 

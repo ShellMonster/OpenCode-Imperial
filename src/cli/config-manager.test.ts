@@ -1,6 +1,16 @@
-import { describe, expect, test, mock, afterEach } from "bun:test"
+import { describe, expect, test, mock, afterEach, beforeEach } from "bun:test"
+import { mkdirSync, rmSync, writeFileSync } from "node:fs"
+import { join } from "node:path"
+import { tmpdir } from "node:os"
 
-import { ANTIGRAVITY_PROVIDER_CONFIG, getPluginNameWithVersion, fetchNpmDistTags, generateOmoConfig } from "./config-manager"
+import {
+  ANTIGRAVITY_PROVIDER_CONFIG,
+  addPluginToOpenCodeConfig,
+  getPluginNameWithVersion,
+  fetchNpmDistTags,
+  generateOmoConfig,
+  resetConfigContext,
+} from "./config-manager"
 import type { InstallConfig } from "./types"
 
 describe("getPluginNameWithVersion", () => {
@@ -115,6 +125,40 @@ describe("getPluginNameWithVersion", () => {
 
     // #then should prioritize @latest
     expect(result).toBe("opencode-imperial@latest")
+  })
+})
+
+describe("addPluginToOpenCodeConfig", () => {
+  let configDir: string
+  const originalConfigDir = process.env.OPENCODE_CONFIG_DIR
+
+  beforeEach(() => {
+    configDir = join(tmpdir(), `omo-config-merge-${Date.now()}`)
+    mkdirSync(configDir, { recursive: true })
+    process.env.OPENCODE_CONFIG_DIR = configDir
+    resetConfigContext()
+  })
+
+  afterEach(() => {
+    process.env.OPENCODE_CONFIG_DIR = originalConfigDir
+    resetConfigContext()
+    rmSync(configDir, { recursive: true, force: true })
+  })
+
+  test("keeps oh-my-opencode enabled and returns coexistence warning", async () => {
+    writeFileSync(
+      join(configDir, "opencode.json"),
+      JSON.stringify({ plugin: ["oh-my-opencode"] }, null, 2) + "\n",
+      "utf8",
+    )
+
+    const result = await addPluginToOpenCodeConfig("1.0.0")
+
+    expect(result.success).toBe(true)
+    expect(result.warnings?.[0]).toContain("同一项目目录只启用一个插件")
+    const content = JSON.parse(await Bun.file(join(configDir, "opencode.json")).text()) as { plugin: string[] }
+    expect(content.plugin).toContain("oh-my-opencode")
+    expect(content.plugin.some((item) => item.startsWith("opencode-imperial"))).toBe(true)
   })
 })
 

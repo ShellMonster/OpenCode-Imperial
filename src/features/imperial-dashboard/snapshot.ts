@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs"
 import type { ImperialTaskRecord } from "../imperial-workflow/task-types"
+import { getPreferredImperialAuditReadPath } from "../imperial-workflow/task-state-file"
 import { loadTasks } from "./task-store"
 
 type ActivityItem = { at: string; kind: "flow" | "progress"; payload: unknown }
@@ -562,7 +563,7 @@ function buildOfficialLoad(tasks: ImperialTaskRecord[]): ImperialDashboardSnapsh
 }
 
 function loadRecentAudit(directory: string, limit: number): Array<Record<string, unknown>> {
-  const file = `${directory}/.sisyphus/imperial-workflow/audit.jsonl`
+  const file = getPreferredImperialAuditReadPath(directory)
   if (!existsSync(file)) return []
 
   const lines = readFileSync(file, "utf8")

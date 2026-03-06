@@ -12,7 +12,7 @@ import {
 
 function setupFixture(name: string): string {
   const dir = join(tmpdir(), `omo-imperial-dashboard-${name}-${Date.now()}`)
-  const base = join(dir, ".sisyphus", "imperial-workflow")
+  const base = join(dir, ".opencode-imperial", "imperial-workflow")
   mkdirSync(base, { recursive: true })
 
   writeFileSync(
@@ -178,7 +178,7 @@ describe("imperial dashboard snapshot", () => {
 
   test("builds bottleneck items for stalled and pending review tasks", () => {
     const dir = setupFixture("bottlenecks")
-    const base = join(dir, ".sisyphus", "imperial-workflow")
+    const base = join(dir, ".opencode-imperial", "imperial-workflow")
     writeFileSync(
       join(base, "tasks.json"),
       JSON.stringify(
@@ -252,7 +252,7 @@ describe("imperial dashboard snapshot", () => {
 
   test("builds memorial entries for completed work", () => {
     const dir = setupFixture("memorial-done")
-    const base = join(dir, ".sisyphus", "imperial-workflow")
+    const base = join(dir, ".opencode-imperial", "imperial-workflow")
     writeFileSync(
       join(base, "tasks.json"),
       JSON.stringify(

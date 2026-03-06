@@ -1,6 +1,6 @@
 # OpenCode Imperial
 
-![OpenCode Imperial Hero](./.github/assets/opencode-imperial-workflow-concept-cn.jpg)
+![OpenCode Imperial Hero](./.github/assets/opencode-imperial-readme-hero.jpeg)
 
 把 OpenCode 的多 Agent 编排，改造成一套可审议、可派发、可回执、可审计的三省六部工作流。
 
@@ -11,6 +11,12 @@
 - npm 包名：`opencode-imperial`
 - CLI 命令：`opencode-imperial`
 - 默认叙事：中文三省六部
+
+共存策略：
+
+- 可以与 `oh-my-opencode` 同机共存安装
+- 建议同一项目目录只启用一个插件
+- `opencode-imperial` 的工作流运行时数据写入 `.opencode-imperial/imperial-workflow/`
 
 ## 30 秒理解
 
@@ -248,10 +254,13 @@ graph TD
 
 当前版本在开启 imperial workflow 后，会写入：
 
-- `.sisyphus/imperial-workflow/tasks.json`
-- `.sisyphus/imperial-workflow/audit.jsonl`
+- `.opencode-imperial/imperial-workflow/tasks.json`
+- `.opencode-imperial/imperial-workflow/audit.jsonl`
 
-这里仍保留兼容路径，暂未迁到新品牌目录。
+兼容说明：
+
+- 如果工作区里只有旧的 `.sisyphus/imperial-workflow/*` 文件，当前版本仍会兼容读取
+- 新写入统一落到 `.opencode-imperial/imperial-workflow/*`
 
 ## 文档入口
 
@@ -270,4 +279,3 @@ graph TD
 - 运行时数据目录还没迁到新品牌路径
 - 非主链路文档与个别 workflow 文件还残留上游命名
 - 内部兼容 key 仍保留旧名，但不影响当前使用
-

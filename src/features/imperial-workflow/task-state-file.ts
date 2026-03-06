@@ -9,8 +9,48 @@ export type ImperialTaskStateFile = {
 const LOCK_TIMEOUT_MS = 2500
 const LOCK_RETRY_MS = 25
 
+export function getImperialRuntimeDir(directory: string): string {
+  return join(directory, ".opencode-imperial", "imperial-workflow")
+}
+
+export function getLegacyImperialRuntimeDir(directory: string): string {
+  return join(directory, ".sisyphus", "imperial-workflow")
+}
+
 export function getImperialTaskFilePath(directory: string): string {
-  return join(directory, ".sisyphus", "imperial-workflow", "tasks.json")
+  return join(getImperialRuntimeDir(directory), "tasks.json")
+}
+
+export function getLegacyImperialTaskFilePath(directory: string): string {
+  return join(getLegacyImperialRuntimeDir(directory), "tasks.json")
+}
+
+export function getImperialAuditFilePath(directory: string): string {
+  return join(getImperialRuntimeDir(directory), "audit.jsonl")
+}
+
+export function getLegacyImperialAuditFilePath(directory: string): string {
+  return join(getLegacyImperialRuntimeDir(directory), "audit.jsonl")
+}
+
+export function getPreferredImperialTaskReadPath(directory: string): string {
+  const primaryPath = getImperialTaskFilePath(directory)
+  if (existsSync(primaryPath)) return primaryPath
+
+  const legacyPath = getLegacyImperialTaskFilePath(directory)
+  if (existsSync(legacyPath)) return legacyPath
+
+  return primaryPath
+}
+
+export function getPreferredImperialAuditReadPath(directory: string): string {
+  const primaryPath = getImperialAuditFilePath(directory)
+  if (existsSync(primaryPath)) return primaryPath
+
+  const legacyPath = getLegacyImperialAuditFilePath(directory)
+  if (existsSync(legacyPath)) return legacyPath
+
+  return primaryPath
 }
 
 export function readImperialTaskStateFile(filePath: string): ImperialTaskStateFile {

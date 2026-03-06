@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs"
 import { join } from "node:path"
 import { tmpdir } from "node:os"
 import { recordImperialAudit } from "./audit-log"
+import { getImperialAuditFilePath } from "./task-state-file"
 
 function createTempDir(name: string): string {
   const dir = join(tmpdir(), `omo-imperial-${name}-${Date.now()}`)
@@ -14,7 +15,7 @@ describe("recordImperialAudit", () => {
   test("writes jsonl audit entry", () => {
     //#given
     const dir = createTempDir("audit")
-    const file = join(dir, ".sisyphus", "imperial-workflow", "audit.jsonl")
+    const file = getImperialAuditFilePath(dir)
 
     //#when
     recordImperialAudit({

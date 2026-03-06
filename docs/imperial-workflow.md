@@ -83,8 +83,13 @@ If needed, override the default matrix:
 
 When enabled, the plugin writes:
 
-- `.sisyphus/imperial-workflow/tasks.json`
-- `.sisyphus/imperial-workflow/audit.jsonl`
+- `.opencode-imperial/imperial-workflow/tasks.json`
+- `.opencode-imperial/imperial-workflow/audit.jsonl`
+
+Legacy compatibility:
+
+- If only legacy `.sisyphus/imperial-workflow/*` exists, it is still readable.
+- New writes go to `.opencode-imperial/imperial-workflow/*`.
 
 ## Dashboard Runtime (Plan B)
 
@@ -143,7 +148,7 @@ When a delegation is denied:
 
 1. Check runtime logs for `[imperial-workflow] delegation audit`.
 2. Open audit file:
-   - `.sisyphus/imperial-workflow/audit.jsonl`
+   - `.opencode-imperial/imperial-workflow/audit.jsonl`
 3. Verify:
    - `callerAgent` and `targetAgent`
    - resolved `callerRole` and `targetRole`

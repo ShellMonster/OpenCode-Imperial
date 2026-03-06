@@ -1,7 +1,8 @@
 import { appendFileSync, mkdirSync } from "node:fs"
-import { dirname, join } from "node:path"
+import { dirname } from "node:path"
 import { log } from "../../shared/logger"
 import type { ImperialRole } from "../../config/schema/imperial-workflow"
+import { getImperialAuditFilePath } from "./task-state-file"
 
 export type ImperialAuditRecord = {
   timestamp: string
@@ -18,7 +19,7 @@ export function recordImperialAudit(input: ImperialAuditRecord, directory?: stri
   log("[imperial-workflow] delegation audit", input)
   if (!directory) return
 
-  const filePath = join(directory, ".sisyphus", "imperial-workflow", "audit.jsonl")
+  const filePath = getImperialAuditFilePath(directory)
   try {
     mkdirSync(dirname(filePath), { recursive: true })
     appendFileSync(filePath, `${JSON.stringify(input)}\n`, "utf8")

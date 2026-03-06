@@ -6,7 +6,7 @@ import { formatErrorWithSuggestion } from "./format-error-with-suggestion"
 import { detectConfigFormat } from "./opencode-config-format"
 import { parseOpenCodeConfigFileWithError, type OpenCodeConfig } from "./parse-opencode-config-file"
 import { getPluginNameWithVersion } from "./plugin-name-with-version"
-import { PLUGIN_PACKAGE_NAME } from "../../shared"
+import { LEGACY_PLUGIN_PACKAGE_NAME, PLUGIN_PACKAGE_NAME } from "../../shared"
 
 export async function addPluginToOpenCodeConfig(currentVersion: string): Promise<ConfigMergeResult> {
   try {
@@ -21,6 +21,7 @@ export async function addPluginToOpenCodeConfig(currentVersion: string): Promise
 
   const { format, path } = detectConfigFormat()
   const pluginEntry = await getPluginNameWithVersion(currentVersion)
+  const warnings: string[] = []
 
   try {
     if (format === "none") {
@@ -40,13 +41,21 @@ export async function addPluginToOpenCodeConfig(currentVersion: string): Promise
 
     const config = parseResult.config
     const plugins = config.plugin ?? []
+    const hasLegacyPlugin = plugins.some(
+      (plugin) => plugin === LEGACY_PLUGIN_PACKAGE_NAME || plugin.startsWith(`${LEGACY_PLUGIN_PACKAGE_NAME}@`)
+    )
+    if (hasLegacyPlugin) {
+      warnings.push(
+        "检测到已启用 oh-my-opencode。两个插件可以共存安装，但建议同一项目目录只启用一个插件以避免行为重叠。"
+      )
+    }
     const existingIndex = plugins.findIndex(
       (plugin) => plugin === PLUGIN_PACKAGE_NAME || plugin.startsWith(`${PLUGIN_PACKAGE_NAME}@`)
     )
 
     if (existingIndex !== -1) {
       if (plugins[existingIndex] === pluginEntry) {
-        return { success: true, configPath: path }
+        return { success: true, configPath: path, warnings }
       }
       plugins[existingIndex] = pluginEntry
     } else {
@@ -72,7 +81,7 @@ export async function addPluginToOpenCodeConfig(currentVersion: string): Promise
       writeFileSync(path, JSON.stringify(config, null, 2) + "\n")
     }
 
-    return { success: true, configPath: path }
+    return { success: true, configPath: path, warnings }
   } catch (err) {
     return {
       success: false,

@@ -8,8 +8,8 @@ Added a configurable imperial governance layer for agent delegation:
 - Hard permission gate (`permission_matrix`)
 - Mandatory review gate (`zhongshu -> menxia -> shangshu`)
 - Session-level review tracking
-- Task-state persistence (`.sisyphus/imperial-workflow/tasks.json`)
-- Delegation audit log (`.sisyphus/imperial-workflow/audit.jsonl`)
+- Task-state persistence (`.opencode-imperial/imperial-workflow/tasks.json`)
+- Delegation audit log (`.opencode-imperial/imperial-workflow/audit.jsonl`)
 - Taizi-style ingress classification for work directives
 - Scheduler checks for stalled sessions (`retry` / `escalate`)
 - New tool: `imperial_task_activity`
