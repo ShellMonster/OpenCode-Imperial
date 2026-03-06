@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, spyOn, mock } from "bun:test"
 
+let importCounter = 0
+
+async function importFreshModelResolution() {
+  importCounter += 1
+  return import(`./model-resolution?model-resolution-test=${importCounter}`)
+}
+
 describe("model-resolution check", () => {
   describe("getModelResolutionInfo", () => {
     // given: Model requirements are defined in model-requirements.ts
@@ -7,7 +14,7 @@ describe("model-resolution check", () => {
     // then: Returns info for all agents and categories with their provider chains
 
     it("returns agent requirements with provider chains", async () => {
-      const { getModelResolutionInfo } = await import("./model-resolution")
+      const { getModelResolutionInfo } = await importFreshModelResolution()
 
       const info = getModelResolutionInfo()
 
@@ -19,7 +26,7 @@ describe("model-resolution check", () => {
     })
 
     it("returns category requirements with provider chains", async () => {
-      const { getModelResolutionInfo } = await import("./model-resolution")
+      const { getModelResolutionInfo } = await importFreshModelResolution()
 
       const info = getModelResolutionInfo()
 
@@ -37,7 +44,7 @@ describe("model-resolution check", () => {
     // then: Shows user override in Step 1 position
 
     it("shows user override for agent when configured", async () => {
-      const { getModelResolutionInfoWithOverrides } = await import("./model-resolution")
+      const { getModelResolutionInfoWithOverrides } = await importFreshModelResolution()
 
       // given: User has override for oracle agent
       const mockConfig = {
@@ -56,7 +63,7 @@ describe("model-resolution check", () => {
     })
 
     it("shows user override for category when configured", async () => {
-      const { getModelResolutionInfoWithOverrides } = await import("./model-resolution")
+      const { getModelResolutionInfoWithOverrides } = await importFreshModelResolution()
 
       // given: User has override for visual-engineering category
       const mockConfig = {
@@ -75,7 +82,7 @@ describe("model-resolution check", () => {
     })
 
     it("shows provider fallback when no override exists", async () => {
-      const { getModelResolutionInfoWithOverrides } = await import("./model-resolution")
+      const { getModelResolutionInfoWithOverrides } = await importFreshModelResolution()
 
       // given: No overrides configured
       const mockConfig = {}
@@ -91,7 +98,7 @@ describe("model-resolution check", () => {
     })
 
     it("captures user variant for agent when configured", async () => {
-      const { getModelResolutionInfoWithOverrides } = await import("./model-resolution")
+      const { getModelResolutionInfoWithOverrides } = await importFreshModelResolution()
 
       //#given User has model with variant override for oracle agent
       const mockConfig = {
@@ -111,7 +118,7 @@ describe("model-resolution check", () => {
     })
 
     it("captures user variant for category when configured", async () => {
-      const { getModelResolutionInfoWithOverrides } = await import("./model-resolution")
+      const { getModelResolutionInfoWithOverrides } = await importFreshModelResolution()
 
       //#given User has model with variant override for visual-engineering category
       const mockConfig = {
@@ -137,7 +144,7 @@ describe("model-resolution check", () => {
     // then: Returns pass with details showing resolution flow
 
     it("returns pass or warn status with agent and category counts", async () => {
-      const { checkModelResolution } = await import("./model-resolution")
+      const { checkModelResolution } = await importFreshModelResolution()
 
       const result = await checkModelResolution()
 
@@ -148,7 +155,7 @@ describe("model-resolution check", () => {
     })
 
     it("includes resolution details in verbose mode details array", async () => {
-      const { checkModelResolution } = await import("./model-resolution")
+      const { checkModelResolution } = await importFreshModelResolution()
 
       const result = await checkModelResolution()
 
