@@ -2,12 +2,28 @@
  * Boulder State Constants
  */
 
-export const BOULDER_DIR = ".sisyphus"
+export const IMPERIAL_ARTIFACTS_DIR = ".opencode-imperial"
+export const LEGACY_ARTIFACTS_DIR = ".sisyphus"
+
 export const BOULDER_FILE = "boulder.json"
+export const BOULDER_DIR = IMPERIAL_ARTIFACTS_DIR
+export const LEGACY_BOULDER_DIR = LEGACY_ARTIFACTS_DIR
 export const BOULDER_STATE_PATH = `${BOULDER_DIR}/${BOULDER_FILE}`
+export const LEGACY_BOULDER_STATE_PATH = `${LEGACY_BOULDER_DIR}/${BOULDER_FILE}`
 
+export const PLAN_DIR = "plans"
+export const DRAFT_DIR = "drafts"
 export const NOTEPAD_DIR = "notepads"
-export const NOTEPAD_BASE_PATH = `${BOULDER_DIR}/${NOTEPAD_DIR}`
+export const EVIDENCE_DIR = "evidence"
 
-/** Prometheus plan directory pattern */
-export const PROMETHEUS_PLANS_DIR = ".sisyphus/plans"
+export const PROMETHEUS_PLANS_DIR = `${IMPERIAL_ARTIFACTS_DIR}/${PLAN_DIR}`
+export const LEGACY_PROMETHEUS_PLANS_DIR = `${LEGACY_ARTIFACTS_DIR}/${PLAN_DIR}`
+
+export const PROMETHEUS_DRAFTS_DIR = `${IMPERIAL_ARTIFACTS_DIR}/${DRAFT_DIR}`
+export const LEGACY_PROMETHEUS_DRAFTS_DIR = `${LEGACY_ARTIFACTS_DIR}/${DRAFT_DIR}`
+
+export const NOTEPAD_BASE_PATH = `${IMPERIAL_ARTIFACTS_DIR}/${NOTEPAD_DIR}`
+export const LEGACY_NOTEPAD_BASE_PATH = `${LEGACY_ARTIFACTS_DIR}/${NOTEPAD_DIR}`
+
+export const EVIDENCE_BASE_PATH = `${IMPERIAL_ARTIFACTS_DIR}/${EVIDENCE_DIR}`
+export const LEGACY_EVIDENCE_BASE_PATH = `${LEGACY_ARTIFACTS_DIR}/${EVIDENCE_DIR}`

@@ -18,7 +18,7 @@ while (true) {
   const result = task(
     subagent_type="momus",
     load_skills=[],
-    prompt=".sisyphus/plans/{name}.md",
+    prompt=".opencode-imperial/plans/{name}.md",
     run_in_background=false
   )
 
@@ -61,7 +61,7 @@ while (true) {
    When invoking 门下省(Momus), provide ONLY the file path string as the prompt.
    - Do NOT wrap in explanations, markdown, or conversational text.
    - System hooks may append system directives, but that is expected and handled by 门下省(Momus).
-   - Example invocation: \`prompt=".sisyphus/plans/{name}.md"\`
+   - Example invocation: \`prompt=".opencode-imperial/plans/{name}.md"\`
 
 ### What "OKAY" Means
 

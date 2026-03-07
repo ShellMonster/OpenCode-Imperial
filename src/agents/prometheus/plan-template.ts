@@ -7,7 +7,7 @@
 
 export const PROMETHEUS_PLAN_TEMPLATE = `## Plan Structure
 
-Generate plan to: \`.sisyphus/plans/{name}.md\`
+Generate plan to: \`.opencode-imperial/plans/{name}.md\`
 
 \`\`\`markdown
 # {Plan Title}
@@ -81,7 +81,7 @@ Generate plan to: \`.sisyphus/plans/{name}.md\`
 
 ### QA Policy
 Every task MUST include agent-executed QA scenarios (see TODO template below).
-Evidence saved to \`.sisyphus/evidence/task-{N}-{scenario-slug}.{ext}\`.
+Evidence saved to \`.opencode-imperial/evidence/task-{N}-{scenario-slug}.{ext}\`.
 
 - **Frontend/UI**: Use Playwright (playwright skill) — Navigate, interact, assert DOM, screenshot
 - **TUI/CLI**: Use interactive_bash (tmux) — Run command, send keystrokes, validate output
@@ -246,7 +246,7 @@ Max Concurrent: 7 (Waves 1 & 2)
       3. [Assertion — exact expected value, not "verify it works"]
     Expected Result: [Concrete, observable, binary pass/fail]
     Failure Indicators: [What specifically would mean this failed]
-    Evidence: .sisyphus/evidence/task-{N}-{scenario-slug}.{ext}
+    Evidence: .opencode-imperial/evidence/task-{N}-{scenario-slug}.{ext}
 
   Scenario: [Failure/edge case — what SHOULD fail gracefully]
     Tool: [same format]
@@ -255,7 +255,7 @@ Max Concurrent: 7 (Waves 1 & 2)
       1. [Trigger the error condition]
       2. [Assert error is handled correctly]
     Expected Result: [Graceful failure with correct error message/code]
-    Evidence: .sisyphus/evidence/task-{N}-{scenario-slug}-error.{ext}
+    Evidence: .opencode-imperial/evidence/task-{N}-{scenario-slug}-error.{ext}
   \\\`\\\`\\\`
 
   > **Specificity requirements — every scenario MUST use:**
@@ -287,7 +287,7 @@ Max Concurrent: 7 (Waves 1 & 2)
 > 4 review agents run in PARALLEL. ALL must APPROVE. Rejection → fix → re-run.
 
 - [ ] F1. **Plan Compliance Audit** — \`oracle\`
-  Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, curl endpoint, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
+  Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, curl endpoint, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .opencode-imperial/evidence/. Compare deliverables against plan.
   Output: \`Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT\`
 
 - [ ] F2. **Code Quality Review** — \`unspecified-high\`
@@ -295,7 +295,7 @@ Max Concurrent: 7 (Waves 1 & 2)
   Output: \`Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT\`
 
 - [ ] F3. **Real Manual QA** — \`unspecified-high\` (+ \`playwright\` skill if UI)
-  Start from clean state. Execute EVERY QA scenario from EVERY task — follow exact steps, capture evidence. Test cross-task integration (features working together, not isolation). Test edge cases: empty state, invalid input, rapid actions. Save to \`.sisyphus/evidence/final-qa/\`.
+  Start from clean state. Execute EVERY QA scenario from EVERY task — follow exact steps, capture evidence. Test cross-task integration (features working together, not isolation). Test edge cases: empty state, invalid input, rapid actions. Save to \`.opencode-imperial/evidence/final-qa/\`.
   Output: \`Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT\`
 
 - [ ] F4. **Scope Fidelity Check** — \`deep\`

@@ -59,7 +59,7 @@ flowchart TB
     User -->|"Describe work"| Prometheus
     Prometheus -->|"Consult"| Metis
     Prometheus -->|"Interview"| User
-    Prometheus -->|"Generate plan"| Plan[".sisyphus/plans/*.md"]
+    Prometheus -->|"Generate plan"| Plan[".opencode-imperial/plans/*.md"]
     Plan -->|"High accuracy?"| Momus
     Momus -->|"OKAY / REJECT"| Prometheus
     
@@ -85,7 +85,7 @@ flowchart TB
 
 ### Prometheus: Your Strategic Consultant
 
-Prometheus is not just a planner, it's an intelligent interviewer that helps you think through what you actually need. It is **READ-ONLY** - can only create or modify markdown files within `.sisyphus/` directory.
+Prometheus is not just a planner, it's an intelligent interviewer that helps you think through what you actually need. It is **READ-ONLY** - can only create or modify markdown files within `.opencode-imperial/` directory.
 
 **The Interview Process:**
 
@@ -221,7 +221,7 @@ This prevents repeating mistakes and ensures consistent patterns.
 **Notepad System:**
 
 ```
-.sisyphus/notepads/{plan-name}/
+.opencode-imperial/notepads/{plan-name}/
 ├── learnings.md      # Patterns, conventions, successful approaches
 ├── decisions.md      # Architectural choices and rationales
 ├── issues.md         # Problems, blockers, gotchas encountered
@@ -337,7 +337,7 @@ task(
 2. Select "Prometheus" from the agent list
 3. Describe your work: "I want to refactor the auth system"
 4. Answer interview questions
-5. Prometheus creates plan in .sisyphus/plans/{name}.md
+5. Prometheus creates plan in .opencode-imperial/plans/{name}.md
 ```
 
 **Method 2: Use @plan Command (in Sisyphus)**
@@ -347,7 +347,7 @@ task(
 2. Type: @plan "I want to refactor the auth system"
 3. The @plan command automatically switches to Prometheus
 4. Answer interview questions
-5. Prometheus creates plan in .sisyphus/plans/{name}.md
+5. Prometheus creates plan in .opencode-imperial/plans/{name}.md
 ```
 
 **Which Should You Use?**
@@ -370,7 +370,7 @@ User: /start-work
     ↓
 [start-work hook activates]
     ↓
-Check: Does .sisyphus/boulder.json exist?
+Check: Does .opencode-imperial/boulder.json exist?
     ↓
     ├─ YES (existing work) → RESUME MODE
     │   - Read the existing boulder state
@@ -379,7 +379,7 @@ Check: Does .sisyphus/boulder.json exist?
     │   - Atlas continues where you left off
     │
     └─ NO (fresh start) → INIT MODE
-        - Find the most recent plan in .sisyphus/plans/
+        - Find the most recent plan in .opencode-imperial/plans/
         - Create new boulder.json tracking this plan
         - Switch session agent to Atlas
         - Begin execution from task 1
@@ -504,8 +504,8 @@ Prometheus enters interview mode by default. It will ask you questions about you
 ### "/start-work says 'no active plan found'"
 
 Either:
-- No plans exist in `.sisyphus/plans/` → Create one with Prometheus first
-- Plans exist but boulder.json points elsewhere → Delete `.sisyphus/boulder.json` and retry
+- No plans exist in `.opencode-imperial/plans/` → Create one with Prometheus first
+- Plans exist but boulder.json points elsewhere → Delete `.opencode-imperial/boulder.json` and retry
 
 ### "I'm in Atlas but I want to switch back to normal mode"
 

@@ -41,7 +41,7 @@ No worktree specified. Before starting work, you MUST choose or create one:
 
 1. \`git worktree list --porcelain\` — list existing worktrees
 2. Create if needed: \`git worktree add <absolute-path> <branch-or-HEAD>\`
-3. Update \`.sisyphus/boulder.json\` — add \`"worktree_path": "<absolute-path>"\`
+3. Update \`.opencode-imperial/boulder.json\` — add \`"worktree_path": "<absolute-path>"\`
 4. Work exclusively inside that worktree directory`
 
 function resolveWorktreeContext(
@@ -200,7 +200,7 @@ Looking for new plans...`
           contextInfo += `
 ## No Imperial Plans Found
 
-No 中书省(制策规划) plan files found at .sisyphus/plans/
+No 中书省(制策规划) plan files found at .opencode-imperial/plans/
 Use /plan to create a work plan first: /plan "your task"`
         } else if (incompletePlans.length === 0) {
           contextInfo += `

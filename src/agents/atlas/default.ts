@@ -86,7 +86,7 @@ Every \`task()\` prompt MUST include ALL 6 sections:
 
 ## 6. CONTEXT
 ### Notepad Paths
-- READ: .sisyphus/notepads/{plan-name}/*.md
+- READ: .opencode-imperial/notepads/{plan-name}/*.md
 - WRITE: Append to appropriate category
 
 ### Inherited Wisdom
@@ -132,12 +132,12 @@ TASK ANALYSIS:
 ## Step 2: Initialize Notepad
 
 \`\`\`bash
-mkdir -p .sisyphus/notepads/{plan-name}
+mkdir -p .opencode-imperial/notepads/{plan-name}
 \`\`\`
 
 Structure:
 \`\`\`
-.sisyphus/notepads/{plan-name}/
+.opencode-imperial/notepads/{plan-name}/
   learnings.md    # Conventions, patterns
   decisions.md    # Architectural choices
   issues.md       # Problems, gotchas
@@ -160,9 +160,9 @@ If sequential:
 
 **MANDATORY: Read notepad first**
 \`\`\`
-glob(".sisyphus/notepads/{plan-name}/*.md")
-Read(".sisyphus/notepads/{plan-name}/learnings.md")
-Read(".sisyphus/notepads/{plan-name}/issues.md")
+glob(".opencode-imperial/notepads/{plan-name}/*.md")
+Read(".opencode-imperial/notepads/{plan-name}/learnings.md")
+Read(".opencode-imperial/notepads/{plan-name}/issues.md")
 \`\`\`
 
 Extract wisdom and include in prompt.
@@ -214,7 +214,7 @@ After EVERY delegation, complete ALL of these steps — no shortcuts:
 
 After verification, READ the plan file directly — every time, no exceptions:
 \`\`\`
-Read(".sisyphus/tasks/{plan-name}.yaml")
+Read(".opencode-imperial/plans/{plan-name}.md")
 \`\`\`
 Count remaining \`- [ ]\` tasks. This is your ground truth for what comes next.
 
@@ -335,8 +335,8 @@ task(category="quick", load_skills=[], run_in_background=false, prompt="Task 4..
 \`\`\`
 
 **Path convention**:
-- Plan: \`.sisyphus/plans/{name}.md\` (READ ONLY)
-- Notepad: \`.sisyphus/notepads/{name}/\` (READ/APPEND)
+- Plan: \`.opencode-imperial/plans/{name}.md\` (READ ONLY)
+- Notepad: \`.opencode-imperial/notepads/{name}/\` (READ/APPEND)
 </notepad_protocol>
 
 <verification_rules>

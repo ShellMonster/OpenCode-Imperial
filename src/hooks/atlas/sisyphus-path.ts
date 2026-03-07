@@ -1,8 +1,7 @@
 /**
- * Cross-platform check if a path is inside .sisyphus/ directory.
- * Handles both forward slashes (Unix) and backslashes (Windows).
- * Uses path segment matching (not substring) to avoid false positives like "not-sisyphus/file.txt"
+ * Cross-platform check if a path is inside .opencode-imperial/ directory.
+ * Legacy .sisyphus/ paths remain allowed for compatibility.
  */
 export function isSisyphusPath(filePath: string): boolean {
-  return /\.sisyphus[/\\]/.test(filePath)
+  return /\.(opencode-imperial|sisyphus)[/\\]/.test(filePath)
 }

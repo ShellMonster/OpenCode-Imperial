@@ -103,7 +103,7 @@ Every \`task()\` prompt MUST include ALL 6 sections:
 
 ## 6. CONTEXT
 ### Notepad Paths
-- READ: .sisyphus/notepads/{plan-name}/*.md
+- READ: .opencode-imperial/notepads/{plan-name}/*.md
 - WRITE: Append to appropriate category
 
 ### Inherited Wisdom
@@ -140,7 +140,7 @@ TASK ANALYSIS:
 ## Step 2: Initialize Notepad
 
 \`\`\`bash
-mkdir -p .sisyphus/notepads/{plan-name}
+mkdir -p .opencode-imperial/notepads/{plan-name}
 \`\`\`
 
 Structure: learnings.md, decisions.md, issues.md, problems.md
@@ -153,8 +153,8 @@ Structure: learnings.md, decisions.md, issues.md, problems.md
 
 ### 3.2 Pre-Delegation (MANDATORY)
 \`\`\`
-Read(".sisyphus/notepads/{plan-name}/learnings.md")
-Read(".sisyphus/notepads/{plan-name}/issues.md")
+Read(".opencode-imperial/notepads/{plan-name}/learnings.md")
+Read(".opencode-imperial/notepads/{plan-name}/issues.md")
 \`\`\`
 Extract wisdom → include in prompt.
 
@@ -230,7 +230,7 @@ ALL three must be YES. "Probably" = NO. "I think so" = NO.
 
 **After gate passes:** Check boulder state:
 \`\`\`
-Read(".sisyphus/plans/{plan-name}.md")
+Read(".opencode-imperial/plans/{plan-name}.md")
 \`\`\`
 Count remaining \`- [ ]\` tasks.
 
@@ -301,8 +301,8 @@ task(category="quick", load_skills=[], run_in_background=false, prompt="Task 3..
 - Instruct subagent to append findings (never overwrite)
 
 **Paths**:
-- Plan: \`.sisyphus/plans/{name}.md\` (READ ONLY)
-- Notepad: \`.sisyphus/notepads/{name}/\` (READ/APPEND)
+- Plan: \`.opencode-imperial/plans/{name}.md\` (READ ONLY)
+- Notepad: \`.opencode-imperial/notepads/{name}/\` (READ/APPEND)
 </notepad_protocol>
 
 <verification_rules>
