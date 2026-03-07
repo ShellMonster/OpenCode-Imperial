@@ -25,8 +25,9 @@ export class ImperialDashboardManager {
     this.actualPort = buildDashboardPortCandidates(directory, config.port)[0] ?? config.port
   }
 
-  start(): void {
-    if (!this.config.enabled || this.server) return
+  start(): boolean {
+    if (!this.config.enabled) return false
+    if (this.server) return true
 
     const fetch = createImperialDashboardFetchHandler({
       directory: this.directory,
@@ -59,12 +60,13 @@ export class ImperialDashboardManager {
         host: this.config.host,
         port: this.config.port,
       })
-      return
+      return false
     }
 
     log("[imperial-dashboard] server started", {
       url: this.url(),
     })
+    return true
   }
 
   stop(): void {
@@ -76,6 +78,10 @@ export class ImperialDashboardManager {
 
   url(): string {
     return `http://${this.config.host}:${this.actualPort}/imperial-dashboard`
+  }
+
+  isRunning(): boolean {
+    return Boolean(this.server)
   }
 }
 

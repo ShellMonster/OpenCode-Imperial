@@ -86,9 +86,12 @@ export function createManagers(args: {
     modelCacheState,
   })
 
-  imperialDashboardManager.start()
+  const dashboardStarted = imperialDashboardManager.start()
   if (pluginConfig.imperial_workflow?.enabled && (dashboardConfig?.enabled ?? true)) {
     log("[index] imperial dashboard active", { url: imperialDashboardManager.url() })
+    if (dashboardStarted) {
+      process.stderr.write(`[opencode-imperial] dashboard: ${imperialDashboardManager.url()}\n`)
+    }
   }
 
   return {

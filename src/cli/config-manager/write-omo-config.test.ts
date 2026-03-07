@@ -77,4 +77,17 @@ describe("writeOmoConfig", () => {
       expect(savedConfig).toHaveProperty(defaultKey)
     }
   })
+
+  it("writes imperial workflow dashboard defaults for fresh installs", () => {
+    const result = writeOmoConfig(installConfig)
+
+    expect(result.success).toBe(true)
+
+    const savedConfig = parseJsonc<Record<string, unknown>>(readFileSync(testConfigPath, "utf-8"))
+    const imperialWorkflow = getRecord(savedConfig.imperial_workflow)
+    const dashboard = getRecord(imperialWorkflow.dashboard)
+
+    expect(imperialWorkflow.enabled).toBe(true)
+    expect(dashboard.enabled).toBe(true)
+  })
 })

@@ -22,4 +22,16 @@ describe("ImperialDashboardManager", () => {
 
     expect(manager.url()).toContain(String(deriveImperialDashboardPort("/tmp/project-url")))
   })
+
+  test("does not start when disabled", () => {
+    const manager = new ImperialDashboardManager("/tmp/project-disabled", {
+      enabled: false,
+      host: "127.0.0.1",
+      port: 7897,
+      refreshMs: 1500,
+    })
+
+    expect(manager.start()).toBe(false)
+    expect(manager.isRunning()).toBe(false)
+  })
 })
